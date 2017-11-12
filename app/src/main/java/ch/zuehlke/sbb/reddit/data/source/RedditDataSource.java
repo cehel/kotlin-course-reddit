@@ -19,12 +19,7 @@ public interface RedditDataSource {
         void onDataNotAvailable();
     }
 
-    interface GetNewsCallback {
 
-        void onNewsLoaded(RedditNewsData data);
-
-        void onDataNotAvailable();
-    }
 
     void getMoreNews(@NonNull LoadNewsCallback callback);
 
