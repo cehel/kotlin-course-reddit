@@ -66,7 +66,7 @@ public class RedditNewsDelegateAdapter implements ViewTypeDelegateAdapter{
             mComments.setText(String.valueOf(data.getNumberOfComments()));
             mAuthor.setText(data.getAuthor());
             mTitle.setText(data.getTitle());
-            mTime.setText(DateUtils.toFriendlyTime(data.getCreated()));
+            mTime.setText(DateUtils.friendlyTime(data.getCreated()));
             if(Strings.isNullOrEmpty(data.getThumbnailUrl())) {
                 Picasso.with(mContext).load(R.drawable.reddit_placeholder).into(mThumbnail);
             }else{
