@@ -92,7 +92,7 @@ public class RedditNewsRepository implements RedditDataSource {
     @Override
     public void getNews(@NonNull final LoadNewsCallback callback) {
         checkNotNull(callback);
-
+        mRedditNewsRemoteDataSource.refreshNews();
         // Respond immediately with cache if available and not dirty
         if (mCacheNews != null && !mCacheIsDirty) {
             callback.onNewsLoaded(new ArrayList<>(mCacheNews.values()));

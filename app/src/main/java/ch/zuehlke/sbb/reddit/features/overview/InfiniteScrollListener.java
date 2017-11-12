@@ -50,5 +50,15 @@ public abstract class InfiniteScrollListener extends OnScrollListener {
         }
     }
 
+    public void reset(){
+        previousTotal = 0;
+        loading = false;
+        visibleThreshold = 2;
+        firstVisibleItem = 0;
+        visibleItemCount = 0;
+        totalItemCount = 0;
+
+    }
+
     public abstract void loadingFunction();
 }

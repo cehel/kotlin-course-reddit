@@ -71,11 +71,17 @@ public class OverviewFragment extends Fragment implements OverviewContract.View 
                 ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark)
         );
 
-
+        final InfiniteScrollListener infiniteScrollListener = new InfiniteScrollListener((LinearLayoutManager) mNewsView.getLayoutManager()) {
+            @Override
+            public void loadingFunction() {
+                mOverviewPresenter.loadMoreRedditNews();
+            }
+        };
         swipeRefreshLayout.setScrollUpChild(mNewsView);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                infiniteScrollListener.reset();
                 mOverviewPresenter.loadRedditNews(false);
             }
         });
@@ -83,12 +89,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View 
 
         mNewsView.setHasFixedSize(true);
         mNewsView.clearOnScrollListeners();
-        mNewsView.addOnScrollListener(new InfiniteScrollListener((LinearLayoutManager) mNewsView.getLayoutManager()) {
-            @Override
-            public void loadingFunction() {
-                mOverviewPresenter.loadMoreRedditNews();
-            }
-        });
+        mNewsView.addOnScrollListener(infiniteScrollListener);
 
         return root;
     }
