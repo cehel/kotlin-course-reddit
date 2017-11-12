@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">reddit</string>
+    <string name="login_screen_username_hint">Username</string>
+    <string name="login_screen_password_hint">Password</string>
+    <string name="login_screen_login_button_text">login</string>
+    <string name="login_screen_invalid_username">Invalid username</string>
+    <string name="login_screen_invalid_password">Invalid password</string>
+    <string name="overview_screen_no_reddit_news">No Reddit News available</string>
+</resources>
