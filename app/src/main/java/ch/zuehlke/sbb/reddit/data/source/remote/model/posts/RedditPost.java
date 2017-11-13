@@ -26,6 +26,8 @@ public final class RedditPost {
     public int depth = 0;
     @Expose
     public String body_html = null;
+    @Expose
+    public String permalink;
 
 
 }

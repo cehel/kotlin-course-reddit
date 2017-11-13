@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.common.base.Strings;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -113,17 +115,8 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
                 List<RedditPostsData> redditPosts = new ArrayList<>();
                 String parentId = null;
                 List<RedditPostElement> elements = parseResponseToPostElements(response.body());
-                for(RedditPostElement elem : elements){
-                   if(elem instanceof RedditPostElement.DataRedditPostElement){
-                       RedditPost data = ((RedditPostElement.DataRedditPostElement) elem).data;
-                       parentId = data.id;
-
-                       RedditPostsData postData = new RedditPostsData(data.id,parentId,data.author,data.body, data.created_utc, data.depth,data.body_html);
-                       redditPosts.add(postData);
-
-                       callback.onPostsLoaded(redditPosts);
-                   }
-                }
+                redditPosts = flattenRetrofitResponse(elements);
+                callback.onPostsLoaded(redditPosts);
             }
 
             @Override
@@ -133,6 +126,47 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
         });
 
     }
+
+    private List<RedditPostsData> flattenRetrofitResponse(List<RedditPostElement> response){
+        List<RedditPostsData> flatten = new ArrayList<>();
+        int order = -1;
+        for (RedditPostElement redditPostElement : response) {
+            if(redditPostElement instanceof RedditPostElement.DataRedditPostElement){
+                RedditPostElement.DataRedditPostElement dataElement = (RedditPostElement.DataRedditPostElement) redditPostElement;
+                RedditPost data = dataElement.data;
+                if(dataElement.data != null){
+                    if(!Strings.isNullOrEmpty(dataElement.data.body_html)){
+                        RedditPostsData postData = new RedditPostsData(data.id,null, data.author,data.body, data.created_utc, data.depth,data.body_html, data.permalink,order++);
+                        flatten.add(postData);
+                    }else{
+                        flatten.addAll(recursivlyParseResponse(dataElement, data.id, order++));
+                    }
+                }
+            }
+        }
+        return flatten;
+    }
+
+    private List<RedditPostsData> recursivlyParseResponse(RedditPostElement.DataRedditPostElement dataRedditPostElement, String parentId, int order){
+        List<RedditPostsData> posts = new ArrayList<>();
+        for (RedditPostElement child : dataRedditPostElement.data.children) {
+            if(child instanceof RedditPostElement.DataRedditPostElement){
+                RedditPostElement.DataRedditPostElement childData = (RedditPostElement.DataRedditPostElement) child;
+                RedditPost data = childData.data;
+                if(data != null){
+                    RedditPostsData postData = new RedditPostsData(data.id,parentId, data.author,data.body, data.created_utc, data.depth,data.body_html, data.permalink, order++);
+                    posts.add(postData);
+                    if(data.replies != null && data.replies instanceof RedditPostElement.DataRedditPostElement){
+                        posts.addAll(recursivlyParseResponse((RedditPostElement.DataRedditPostElement) data.replies, data.id,order++));
+                    }
+                }
+            }
+
+        }
+        return posts;
+    }
+
+
 
     private List<RedditPostElement> parseResponseToPostElements(ResponseBody response){
         List<RedditPostElement> redditPostElements = null;

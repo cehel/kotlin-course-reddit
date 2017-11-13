@@ -9,18 +9,22 @@ public class RedditPostsData {
     public String parentId;
     public String author = null;
     public String body = null;
-    public long created_utc = 0;
+    public long createdUtc = 0;
     public int depth = 0;
+    public long ordering = -1L;
+    public String permaLink = null;
     public String body_html = null;
 
-    public RedditPostsData(String id, String parentId, String author, String body, long created_utc, int depth, String body_html) {
+    public RedditPostsData(String id, String parentId, String author, String body, long created_utc, int depth, String body_html, String permaLink, long ordering) {
         this.id = id;
         this.parentId = parentId;
         this.author = author;
         this.body = body;
-        this.created_utc = created_utc;
+        this.createdUtc = created_utc;
         this.depth = depth;
         this.body_html = body_html;
+        this.permaLink = permaLink;
+        this.ordering = ordering;
     }
 
     public String getId() {
@@ -39,8 +43,8 @@ public class RedditPostsData {
         return body;
     }
 
-    public long getCreated_utc() {
-        return created_utc;
+    public long getCreatedUtc() {
+        return createdUtc;
     }
 
     public int getDepth() {
@@ -49,5 +53,13 @@ public class RedditPostsData {
 
     public String getBody_html() {
         return body_html;
+    }
+
+    public long getOrdering() {
+        return ordering;
+    }
+
+    public String getPermaLink() {
+        return permaLink;
     }
 }
