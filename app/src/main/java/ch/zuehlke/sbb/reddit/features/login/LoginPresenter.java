@@ -25,7 +25,7 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     @Override
     public void start() {
-        // Do nothing here, as we don't load any data
+        // Do nothing here, as we don't load any redditPost
     }
 
     @Override

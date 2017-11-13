@@ -16,6 +16,7 @@ import ch.zuehlke.sbb.reddit.data.source.remote.RedditNewsDataRemoteDataSource;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.getElementTypeAdapterFactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -52,6 +53,7 @@ public class Injection {
             Gson gson = new GsonBuilder()
                     .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                     .excludeFieldsWithoutExposeAnnotation()
+                    .registerTypeAdapterFactory(getElementTypeAdapterFactory())
                     .create();
 
             retrofit = new Retrofit.Builder()

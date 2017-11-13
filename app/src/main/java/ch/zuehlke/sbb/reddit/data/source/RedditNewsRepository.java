@@ -29,7 +29,7 @@ public class RedditNewsRepository implements RedditDataSource {
     Map<String, RedditNewsData> mCacheNews;
 
     /**
-     * Marks the cache as invalid, to force an update the next time data is requested. This variable
+     * Marks the cache as invalid, to force an update the next time redditPost is requested. This variable
      * has package local visibility so it can be accessed from tests.
      */
     boolean mCacheIsDirty = false;
@@ -45,8 +45,8 @@ public class RedditNewsRepository implements RedditDataSource {
     /**
      * Returns the single instance of this class, creating it if necessary.
      *
-     * @param newsLocalDataSource the backend data source
-     * @param newsLocalDataSource  the device storage data source
+     * @param newsLocalDataSource the backend redditPost source
+     * @param newsLocalDataSource  the device storage redditPost source
      * @return the {@link RedditNewsRepository} instance
      */
     public static RedditNewsRepository getInstance(RedditDataSource newsRemoteDataSource,
@@ -102,7 +102,7 @@ public class RedditNewsRepository implements RedditDataSource {
         //TOOD add online check, if not available go local.
 
         if (mCacheIsDirty) {
-            // If the cache is dirty we need to fetch new data from the network.
+            // If the cache is dirty we need to fetch new redditPost from the network.
             getNewsFromRemoteDataSource(new LoadNewsCallback() {
                 @Override
                 public void onNewsLoaded(List<RedditNewsData> data) {
