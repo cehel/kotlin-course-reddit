@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
+import ch.zuehlke.sbb.reddit.models.RedditPostsData;
 
 /**
  * Created by chsc on 08.11.17.
@@ -19,11 +20,20 @@ public interface RedditDataSource {
         void onDataNotAvailable();
     }
 
+    interface LoadPostsCallback{
+
+        void onPostsLoaded(List<RedditPostsData> posts);
+
+        void onDataNotAvailable();
+    }
+
 
 
     void getMoreNews(@NonNull LoadNewsCallback callback);
 
     void getNews(@NonNull LoadNewsCallback callback);
+
+    void getPosts(@NonNull LoadPostsCallback callback, String title);
 
     void refreshNews();
 

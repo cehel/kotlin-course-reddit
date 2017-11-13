@@ -11,6 +11,8 @@ import java.util.List;
 public final class RedditPost {
 
     @Expose
+    public String id = null;
+    @Expose
     public List<RedditPostElement> children = null;
     @Expose
     public RedditPostElement replies = null;

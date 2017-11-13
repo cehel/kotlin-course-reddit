@@ -135,6 +135,11 @@ public class RedditRepository implements RedditDataSource {
     }
 
     @Override
+    public void getPosts(@NonNull LoadPostsCallback callback, String title) {
+
+    }
+
+    @Override
     public void refreshNews() {
         mCacheIsDirty = true;
         mRedditNewsRemoteDataSource.refreshNews();

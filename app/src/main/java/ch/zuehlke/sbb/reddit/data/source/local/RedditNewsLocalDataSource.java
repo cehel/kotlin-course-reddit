@@ -92,6 +92,11 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
     }
 
     @Override
+    public void getPosts(@NonNull LoadPostsCallback callback, String title) {
+
+    }
+
+    @Override
     public void refreshNews() {
         // Not required because the {@link RedditRepository} handles the logic of refreshing the
         // news from all the available redditPost sources.

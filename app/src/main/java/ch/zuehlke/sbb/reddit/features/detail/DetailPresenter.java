@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ch.zuehlke.sbb.reddit.Injection;
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository;
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI;
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPost;
@@ -32,8 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DetailPresenter implements DetailContract.Presenter {
 
-    private static final Type type = new TypeToken<List<RedditPostElement>>() {
-    }.getType();
+    private static final Type type = new TypeToken<List<RedditPostElement>>(){}.getType();
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapterFactory(getElementTypeAdapterFactory())
