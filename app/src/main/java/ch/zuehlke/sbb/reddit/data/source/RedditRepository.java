@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
+import ch.zuehlke.sbb.reddit.models.RedditPostsData;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -22,6 +23,8 @@ public class RedditRepository implements RedditDataSource {
     private final RedditDataSource mRedditNewsRemoteDataSource;
 
     private final RedditDataSource mRedditNewsLocalDataSource;
+
+    private static final String COMMENT_SECION = "comments/";
 
     /**
      * This variable has package local visibility so it can be accessed from tests.
@@ -135,7 +138,42 @@ public class RedditRepository implements RedditDataSource {
     }
 
     @Override
-    public void getPosts(@NonNull LoadPostsCallback callback, String title) {
+    public void getPosts(@NonNull final LoadPostsCallback callback, String permalink) {
+        mRedditNewsLocalDataSource.getPosts(new LoadPostsCallback() {
+            @Override
+            public void onPostsLoaded(List<RedditPostsData> posts) {
+                callback.onPostsLoaded(posts);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+        },permalink);
+        mRedditNewsRemoteDataSource.getPosts(new LoadPostsCallback() {
+            @Override
+            public void onPostsLoaded(List<RedditPostsData> posts) {
+                for(RedditPostsData data: posts){
+                    mRedditNewsLocalDataSource.savePosts(data);
+                }
+                callback.onPostsLoaded(posts);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+        }, convertURLToRemote(permalink));
+
+    }
+
+    private String convertURLToRemote(String url) {
+        String parsedUrl = url.substring(url.indexOf(COMMENT_SECION)+COMMENT_SECION.length());
+        return parsedUrl.substring(0,parsedUrl.length()-1);
+    }
+
+    @Override
+    public void savePosts(@NonNull RedditPostsData data) {
 
     }
 

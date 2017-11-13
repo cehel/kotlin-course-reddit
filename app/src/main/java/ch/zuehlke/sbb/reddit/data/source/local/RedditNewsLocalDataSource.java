@@ -11,6 +11,7 @@ import java.util.List;
 
 import ch.zuehlke.sbb.reddit.data.source.RedditDataSource;
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
+import ch.zuehlke.sbb.reddit.models.RedditPostsData;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -92,7 +93,78 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
     }
 
     @Override
-    public void getPosts(@NonNull LoadPostsCallback callback, String title) {
+    public void getPosts(@NonNull LoadPostsCallback callback, String permalink) {
+        List<RedditPostsData> redditNews = new ArrayList<>();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENT_ID,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ID,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_DEPTH,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY_HTML,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ORDERING,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR
+        };
+
+        String selection =RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK+" like '" + permalink + "'";
+
+        Cursor c = db.query(
+                RedditNewsPersistenceContract.RedditNewsEntry.TABLE_NAME, projection, selection, null, null, null, RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR);
+
+        if (c != null && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                String parentId = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENT_ID));
+                String postId = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ID));
+                int depth = c.getInt(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_DEPTH));
+                long created = c.getLong(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED));
+                String bodyHtml = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY_HTML));
+                String body = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY));
+                String permaLink = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK));
+                long ordering = c.getLong(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ORDERING));
+                String author = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR));
+
+                RedditPostsData data = new RedditPostsData(postId,parentId,author,body,created,depth,bodyHtml,permaLink,ordering);
+                redditNews.add(data);
+            }
+        }
+        if (c != null) {
+            c.close();
+        }
+
+        db.close();
+
+        if (redditNews.isEmpty()) {
+            // This will be called if the table is new or just empty.
+            callback.onDataNotAvailable();
+        } else {
+            callback.onPostsLoaded(redditNews);
+        }
+    }
+
+    @Override
+    public void savePosts(@NonNull RedditPostsData data) {
+
+        checkNotNull(data);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR,data.getAuthor());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY,data.getBody());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED,data.getCreatedUtc());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ID,data.getId());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK,data.getPermaLink());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_DEPTH,data.getDepth());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENT_ID,data.getParentId());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY_HTML,data.getBody_html());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ORDERING,data.getOrdering());
+
+
+        db.insert(RedditNewsPersistenceContract.RedditPostEntry.TABLE_NAME, null, values);
+
+        db.close();
 
     }
 

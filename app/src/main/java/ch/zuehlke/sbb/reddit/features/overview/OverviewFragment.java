@@ -41,9 +41,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View 
     private RedditNewsDelegateAdapter.OnNewsSelectedListener listener = new RedditNewsDelegateAdapter.OnNewsSelectedListener() {
         @Override
         public void onNewsSelected(String url) {
-            String parsedUrl = url.substring(url.indexOf(COMMENT_SECION)+COMMENT_SECION.length());
-            parsedUrl = parsedUrl.substring(0,parsedUrl.length()-1);
-            showRedditNewsDetails(parsedUrl);
+            showRedditNewsDetails(url);
         }
     };
 

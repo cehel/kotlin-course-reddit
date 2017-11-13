@@ -35,6 +35,8 @@ public interface RedditDataSource {
 
     void getPosts(@NonNull LoadPostsCallback callback, String title);
 
+    void savePosts(@NonNull RedditPostsData data);
+
     void refreshNews();
 
     void deleteAllNews();

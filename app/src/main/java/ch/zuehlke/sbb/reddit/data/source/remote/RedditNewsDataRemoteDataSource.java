@@ -127,6 +127,11 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
 
     }
 
+    @Override
+    public void savePosts(@NonNull RedditPostsData data) {
+        //Remotly its not used
+    }
+
     private List<RedditPostsData> flattenRetrofitResponse(List<RedditPostElement> response){
         List<RedditPostsData> flatten = new ArrayList<>();
         int order = -1;
