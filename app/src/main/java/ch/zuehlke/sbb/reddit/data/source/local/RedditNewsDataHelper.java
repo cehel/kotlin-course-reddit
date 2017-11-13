@@ -31,6 +31,17 @@ public class RedditNewsDataHelper extends SQLiteOpenHelper {
             RedditNewsPersistenceContract.RedditNewsEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
             RedditNewsPersistenceContract.RedditNewsEntry.COLUMN_NAME_URL + TEXT_TYPE +
             " )";
+    private static final String SQL_CREATE_POST_ENTRIES =  "CREATE TABLE " + RedditNewsPersistenceContract.RedditPost.TABLE_NAME + " (" +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_ID + TEXT_TYPE + " PRIMARY_KEY" + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_AUTHOR + TEXT_TYPE + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_PARENT_ID + LONG_TYPE + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_CREATED + LONG_TYPE + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_NUMBER_OF_COMMENTS + TEXT_TYPE + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_BODY+ TEXT_TYPE + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_DEPTH + LONG_TYPE + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPost.COLUMN_NAME_BODY_HTML + TEXT_TYPE +
+            " )";
+
 
 
 
