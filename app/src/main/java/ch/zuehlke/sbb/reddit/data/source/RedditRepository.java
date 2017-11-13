@@ -171,6 +171,7 @@ public class RedditRepository implements RedditDataSource {
 
     @Override
     public void getPosts(@NonNull final LoadPostsCallback callback, final String permalink) {
+        final String convertedPermaLink = convertURLToRemote(permalink);
         mRedditNewsLocalDataSource.getPosts(new LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<RedditPostsData> posts) {
@@ -181,12 +182,12 @@ public class RedditRepository implements RedditDataSource {
             public void onDataNotAvailable() {
 
             }
-        },convertURLToRemote(permalink));
+        },convertedPermaLink);
 
         mRedditNewsRemoteDataSource.getPosts(new LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<RedditPostsData> posts) {
-                mRedditNewsLocalDataSource.deletePostsWithPermaLink(permalink);
+                mRedditNewsLocalDataSource.deletePostsWithPermaLink(convertedPermaLink);
                 for(RedditPostsData data: posts){
                     mRedditNewsLocalDataSource.savePosts(data);
                 }
@@ -197,7 +198,7 @@ public class RedditRepository implements RedditDataSource {
             public void onDataNotAvailable() {
 
             }
-        }, convertURLToRemote(permalink));
+        }, convertedPermaLink);
 
     }
 
