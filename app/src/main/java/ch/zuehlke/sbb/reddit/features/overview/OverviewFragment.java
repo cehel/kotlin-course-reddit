@@ -146,7 +146,7 @@ public class OverviewFragment extends Fragment implements OverviewContract.View 
 
     @Override
     public void showRedditNewsLoadingError() {
-        Snackbar.make(getView(),"Error while loading reddit news",Snackbar.LENGTH_LONG);
+        Snackbar.make(getView(),R.string.overview_screen_error_loading_reddit_news,Snackbar.LENGTH_LONG);
     }
 
 

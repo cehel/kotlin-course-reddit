@@ -7,10 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+
+import com.google.common.base.Strings;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ch.zuehlke.sbb.reddit.R;
 import ch.zuehlke.sbb.reddit.features.overview.OverviewActivity;
@@ -23,6 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class LoginFragment extends Fragment implements LoginContract.View {
 
+    private static final String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     private LoginContract.Presenter mPresenter;
     private ProgressBar mProgessBar;
@@ -52,10 +60,55 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO add verification Java Like -> So we can show how easy it is with RxJava2
                 mPresenter.login(mUsername.getText().toString(),mPassword.getText().toString());
             }
         });
+
+
+        mUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.length() > 0 && verifyIsEmail(editable.toString())){
+                    mUsername.setError(null);
+                }else{
+                     mUsername.setError(getString(R.string.login_screen_invalid_email));
+                }
+            }
+        });
+
+        mPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(verifyPasswordLength(editable.toString())){
+                    mPassword.setError(null);
+                }else{
+                    mPassword.setError(getString(R.string.login_screen_invalid_password_length));
+                }
+            }
+        });
+
+
+
         return root;
 
     }
@@ -91,5 +144,15 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         Intent intent = new Intent(getContext(),OverviewActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+
+    private boolean verifyPasswordLength(String password){
+        return (!Strings.isNullOrEmpty(password) && password.length() >=6);
+    }
+
+    private boolean verifyIsEmail(String email){
+        Matcher matcher = android.util.Patterns.EMAIL_ADDRESS.matcher(email);
+        return matcher.matches();
     }
 }

@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -13,6 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class LoginPresenter implements LoginContract.Presenter {
 
     private final LoginContract.View mLoginView;
+
 
     public LoginPresenter(@NonNull  LoginContract.View view){
         this.mLoginView = checkNotNull(view,"LoginView cannot be null");
@@ -37,12 +41,12 @@ public class LoginPresenter implements LoginContract.Presenter {
                         if(mLoginView.isActive()){
 
                             boolean hasError = false;
-                            if(!userEmail.equals("a")){
+                            if( !userEmail.equals("test.tester@test.com")){
                                 mLoginView.showInvalidUsername();
                                 hasError = true;
                             }
 
-                            if(!password.equals("a")){
+                            if(!password.equals("123456")){
                                 mLoginView.showInvalidPassword();
                                 hasError = true;
                             }
@@ -59,4 +63,6 @@ public class LoginPresenter implements LoginContract.Presenter {
         },1000);
 
     }
+
+
 }
