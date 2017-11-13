@@ -65,9 +65,9 @@ public abstract class AbstractTestCase {
                     System.out.println(dataElement.data.body);
                 }
 
-                if(dataElement.data.created != 0L){
+                if(dataElement.data.created_utc != 0L){
                     System.out.print("Created=");
-                    System.out.println(DateUtils.friendlyTime(dataElement.data.created));
+                    System.out.println(DateUtils.friendlyTime(dataElement.data.created_utc));
                 }
 
                 if(dataElement.data.depth != 0){

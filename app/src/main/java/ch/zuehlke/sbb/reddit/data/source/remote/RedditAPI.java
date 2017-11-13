@@ -1,9 +1,7 @@
 package ch.zuehlke.sbb.reddit.data.source.remote;
 
-import java.util.List;
-
 import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIResponse;
-import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -21,6 +19,6 @@ public interface RedditAPI {
 
 
     @GET("/comments/{title}.json")
-    Call<List<RedditPostElement>> getRedditPosts(@Path("title") String title, @Query("sort") String sortOrder);
+    Call<ResponseBody> getRedditPosts(@Path("title") String title, @Query("sort") String sortOrder);
 
 }
