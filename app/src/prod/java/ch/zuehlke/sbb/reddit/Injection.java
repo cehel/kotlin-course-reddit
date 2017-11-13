@@ -31,7 +31,7 @@ public class Injection {
     private static Retrofit retrofit;
 
     public static RedditRepository provideRedditNewsRepository(@NonNull Context context) {
-        checkNotNull(context);
+         checkNotNull(context);
         return RedditRepository.getInstance(RedditNewsDataRemoteDataSource.getInstance(context,getRedditAPI(getRetroFit())),
                 RedditNewsLocalDataSource.getInstance(context));
     }
