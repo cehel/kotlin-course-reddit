@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPost;
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
+import ch.zuehlke.sbb.reddit.models.RedditPostsData;
 
 /**
  * Created by chsc on 08.11.17.
@@ -22,7 +22,7 @@ public interface RedditDataSource {
 
     interface LoadPostsCallback{
 
-        void onPostsLoaded(List<RedditPost> posts);
+        void onPostsLoaded(List<RedditPostsData> posts);
 
         void onDataNotAvailable();
     }
@@ -33,7 +33,7 @@ public interface RedditDataSource {
 
     void getNews(@NonNull LoadNewsCallback callback);
 
-    void getPosts(@NonNull LoadPostsCallback callback);
+    void getPosts(@NonNull LoadPostsCallback callback, String title);
 
     void refreshNews();
 

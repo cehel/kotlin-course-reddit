@@ -8,6 +8,7 @@ import java.util.List;
 
 public final class RedditPost {
 
+    public String id = null;
     public List<RedditPostElement> children = null;
     public RedditPostElement replies = null;
     public String author = null;

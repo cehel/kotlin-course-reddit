@@ -92,7 +92,7 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
     }
 
     @Override
-    public void getPosts(@NonNull LoadPostsCallback callback) {
+    public void getPosts(@NonNull LoadPostsCallback callback, String title) {
 
     }
 

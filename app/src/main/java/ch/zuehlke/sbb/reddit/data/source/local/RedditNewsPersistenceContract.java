@@ -25,7 +25,7 @@ public class RedditNewsPersistenceContract {
     }
 
     public static abstract class RedditPost{
-        public static final String TABLE_NAME = "redditnews";
+        public static final String TABLE_NAME = "redditposts";
         public static final String COLUMN_NAME_AUTHOR = "author";
         public static final String COLUMN_NAME_TITLE = "title";
     }

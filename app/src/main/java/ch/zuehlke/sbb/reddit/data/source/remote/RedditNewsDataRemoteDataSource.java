@@ -12,7 +12,10 @@ import ch.zuehlke.sbb.reddit.data.source.RedditDataSource;
 import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIChildrenResponse;
 import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIChildrenResponseData;
 import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIResponse;
+import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPost;
+import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement;
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
+import ch.zuehlke.sbb.reddit.models.RedditPostsData;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -98,7 +101,32 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
     }
 
     @Override
-    public void getPosts(@NonNull LoadPostsCallback callback) {
+    public void getPosts(@NonNull final LoadPostsCallback callback, String title) {
+        Call<List<RedditPostElement>> call = mRedditAPI.getRedditPosts(title, "new");
+        call.enqueue(new Callback<List<RedditPostElement>>(){
+
+            @Override
+            public void onResponse(Call<List<RedditPostElement>> call, Response<List<RedditPostElement>> response) {
+                List<RedditPostsData> redditPosts = new ArrayList<>();
+                String parentId = null;
+                for(RedditPostElement elem : response.body()){
+                   if(elem instanceof RedditPostElement.DataRedditPostElement){
+                       RedditPost data = ((RedditPostElement.DataRedditPostElement) elem).data;
+                       parentId = data.id;
+
+                       RedditPostsData postData = new RedditPostsData(data.id,parentId,data.author,data.body, data.created_utc, data.depth,data.body_html);
+                       redditPosts.add(postData);
+
+                       callback.onPostsLoaded(redditPosts);
+                   }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RedditPostElement>> call, Throwable t) {
+                callback.onDataNotAvailable();
+            }
+        });
 
     }
 
