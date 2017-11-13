@@ -4,14 +4,14 @@ package ch.zuehlke.sbb.reddit.data.source.remote.model.posts;
  * Created by chsc on 13.11.17.
  */
 
-// Not an interface by design: it's most likely there is just two known redditPost types
+
 public abstract class RedditPostElement {
 
-    // So we can control they instantiation
+
     private RedditPostElement() {
     }
 
-    // ... any convenient code, visitor pattern stuff here, etc ..
+
 
     public static RedditPostElement reference(final String reference) {
         return new ReferenceRedditPostElement(reference);
@@ -22,7 +22,7 @@ public abstract class RedditPostElement {
         public final String kind = null;
         public final RedditPost data = null;
 
-        // Gson does requires neither constructors nor making them non-private
+
         private DataRedditPostElement() {
         }
 
@@ -34,7 +34,6 @@ public abstract class RedditPostElement {
 
         public final String reference;
 
-        // But anyway, control the way it's instantiated within the enclosing class
         private ReferenceRedditPostElement(final String reference) {
             this.reference = reference;
         }

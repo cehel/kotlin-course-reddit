@@ -1,13 +1,12 @@
 package ch.zuehlke.sbb.reddit.features.overview;
 
 
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
 import ch.zuehlke.sbb.reddit.data.source.RedditDataSource;
-import ch.zuehlke.sbb.reddit.data.source.RedditNewsRepository;
+import ch.zuehlke.sbb.reddit.data.source.RedditRepository;
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -20,11 +19,11 @@ public class OverviewPresenter implements OverviewContract.Presenter {
 
     private final OverviewContract.View mOverviewView;
     private boolean mFirstLoad = true;
-    private RedditNewsRepository mRedditNewsRepository;
+    private RedditRepository mRedditRepository;
 
-    public OverviewPresenter(@NonNull OverviewContract.View view,@NonNull RedditNewsRepository redditNewsRepository){
+    public OverviewPresenter(@NonNull OverviewContract.View view,@NonNull RedditRepository redditRepository){
         mOverviewView = checkNotNull(view,"OverviewView cannot be null");
-        mRedditNewsRepository = checkNotNull(redditNewsRepository,"RedditNewsRepository cannot be null");
+        mRedditRepository = checkNotNull(redditRepository,"RedditRepository cannot be null");
         view.setPresenter(this);
     }
 
@@ -51,7 +50,7 @@ public class OverviewPresenter implements OverviewContract.Presenter {
 
     @Override
     public void loadMoreRedditNews() {
-        mRedditNewsRepository.getMoreNews(new RedditDataSource.LoadNewsCallback() {
+        mRedditRepository.getMoreNews(new RedditDataSource.LoadNewsCallback() {
             @Override
             public void onNewsLoaded(List<RedditNewsData> data) {
                 // The view may not be able to handle UI updates anymore
@@ -78,10 +77,10 @@ public class OverviewPresenter implements OverviewContract.Presenter {
              mOverviewView.setLoadingIndicator(true);
          }
          if (forceUpdate) {
-             mRedditNewsRepository.refreshNews();
+             mRedditRepository.refreshNews();
          }
 
-         mRedditNewsRepository.getNews(new RedditDataSource.LoadNewsCallback() {
+         mRedditRepository.getNews(new RedditDataSource.LoadNewsCallback() {
              @Override
              public void onNewsLoaded(List<RedditNewsData> newsDataList) {
                  // The view may not be able to handle UI updates anymore

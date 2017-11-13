@@ -2,7 +2,6 @@ package ch.zuehlke.sbb.reddit.features.overview;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,11 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ch.zuehlke.sbb.reddit.R;
-import ch.zuehlke.sbb.reddit.features.detail.RedditNewsDetailActivity;
+import ch.zuehlke.sbb.reddit.features.detail.DetailActivity;
 import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditNewsDelegateAdapter;
 import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditOverviewAdapter;
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
@@ -32,6 +30,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class OverviewFragment extends Fragment implements OverviewContract.View {
 
+    private static final String COMMENT_SECION = "comments/";
+
     private OverviewContract.Presenter mOverviewPresenter;
     private RedditOverviewAdapter mOverviewAdapter;
     private View mNoNewsView;
@@ -41,7 +41,9 @@ public class OverviewFragment extends Fragment implements OverviewContract.View 
     private RedditNewsDelegateAdapter.OnNewsSelectedListener listener = new RedditNewsDelegateAdapter.OnNewsSelectedListener() {
         @Override
         public void onNewsSelected(String url) {
-
+            String parsedUrl = url.substring(url.indexOf(COMMENT_SECION)+COMMENT_SECION.length());
+            parsedUrl = parsedUrl.substring(0,parsedUrl.length()-1);
+            showRedditNewsDetails(parsedUrl);
         }
     };
 
@@ -157,9 +159,9 @@ public class OverviewFragment extends Fragment implements OverviewContract.View 
     }
 
     @Override
-    public void showRedditNewsDetails(String redditNewsId) {
-        Intent intent = new Intent(getContext(), RedditNewsDetailActivity.class);
-        intent.putExtra(RedditNewsDetailActivity.EXTRA_REDDIT_NEWS_ID, redditNewsId);
+    public void showRedditNewsDetails(String redditNewsUrl) {
+        Intent intent = new Intent(getContext(), DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_REDDIT_NEWS_URL, redditNewsUrl);
         startActivity(intent);
     }
 

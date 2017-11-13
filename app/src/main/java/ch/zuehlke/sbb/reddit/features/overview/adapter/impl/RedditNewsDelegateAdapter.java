@@ -12,7 +12,6 @@ import com.google.common.base.Strings;
 import com.squareup.picasso.Picasso;
 
 import ch.zuehlke.sbb.reddit.R;
-import ch.zuehlke.sbb.reddit.features.detail.RedditNewsDetailActivity;
 import ch.zuehlke.sbb.reddit.features.overview.adapter.ViewType;
 import ch.zuehlke.sbb.reddit.features.overview.adapter.ViewTypeDelegateAdapter;
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;

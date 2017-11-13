@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".features.overview.OverviewActivity"></activity>
-        <activity android:name=".features.detail.RedditNewsDetailActivity"></activity>
+        <activity android:name=".features.detail.DetailActivity"></activity>
 
     </application>
 

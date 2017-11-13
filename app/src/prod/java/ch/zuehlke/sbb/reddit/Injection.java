@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Modifier;
 
-import ch.zuehlke.sbb.reddit.data.source.RedditNewsRepository;
+import ch.zuehlke.sbb.reddit.data.source.RedditRepository;
 import ch.zuehlke.sbb.reddit.data.source.local.RedditNewsLocalDataSource;
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI;
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditNewsDataRemoteDataSource;
@@ -30,9 +30,9 @@ public class Injection {
     private static RedditAPI redditAPI;
     private static Retrofit retrofit;
 
-    public static RedditNewsRepository provideRedditNewsRepository(@NonNull Context context) {
-        checkNotNull(context);
-        return RedditNewsRepository.getInstance(RedditNewsDataRemoteDataSource.getInstance(context,getRedditAPI(getRetroFit())),
+    public static RedditRepository provideRedditNewsRepository(@NonNull Context context) {
+         checkNotNull(context);
+        return RedditRepository.getInstance(RedditNewsDataRemoteDataSource.getInstance(context,getRedditAPI(getRetroFit())),
                 RedditNewsLocalDataSource.getInstance(context));
     }
 
