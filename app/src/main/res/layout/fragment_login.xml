@@ -18,14 +18,14 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_rect_shape_login"
             android:paddingBottom="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingLeft="@dimen/margin_standard_left"
+            android:paddingRight="@dimen/margin_standard_right"
             android:paddingTop="40dp"
             android:layout_marginTop="55dp"
             android:elevation="3dp"
             android:orientation="vertical"
-            android:layout_marginLeft="@dimen/margin_standard_left"
-            android:layout_marginRight="@dimen/margin_standard_right"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
             android:layout_marginBottom="4dp"
             >
 

@@ -98,6 +98,11 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
     }
 
     @Override
+    public void getPosts(@NonNull LoadPostsCallback callback) {
+
+    }
+
+    @Override
     public void refreshNews() {
         after = "";
     }
