@@ -92,6 +92,7 @@ public class RedditRepository implements RedditDataSource {
     @Override
     public void getNews(@NonNull final LoadNewsCallback callback) {
         checkNotNull(callback);
+
         mRedditNewsRemoteDataSource.refreshNews();
         // Respond immediately with cache if available and not dirty
         if (mCacheNews != null && !mCacheIsDirty) {
@@ -99,10 +100,8 @@ public class RedditRepository implements RedditDataSource {
             return;
         }
 
-        //TOOD add online check, if not available go local.
-
         if (mCacheIsDirty) {
-            // If the cache is dirty we need to fetch new redditPost from the network.
+            // If the cache is dirty we need to fetch new data from the network. The Cache is only dirty, when a refreshNews is going on
             getNewsFromRemoteDataSource(new LoadNewsCallback() {
                 @Override
                 public void onNewsLoaded(List<RedditNewsData> data) {
