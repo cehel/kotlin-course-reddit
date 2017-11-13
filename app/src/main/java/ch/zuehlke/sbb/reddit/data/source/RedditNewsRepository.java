@@ -99,9 +99,25 @@ public class RedditNewsRepository implements RedditDataSource {
             return;
         }
 
+        //TOOD add online check, if not available go local.
+
         if (mCacheIsDirty) {
             // If the cache is dirty we need to fetch new data from the network.
-            getNewsFromRemoteDataSource(callback);
+            getNewsFromRemoteDataSource(new LoadNewsCallback() {
+                @Override
+                public void onNewsLoaded(List<RedditNewsData> data) {
+                    for(RedditNewsData newsData : data){
+                        saveRedditNews(newsData);
+                    }
+                    refreshCache(data);
+                    callback.onNewsLoaded(new ArrayList<RedditNewsData>(mCacheNews.values()));
+                }
+
+                @Override
+                public void onDataNotAvailable() {
+                        callback.onDataNotAvailable();
+                }
+            });
         } else {
             // Query the local storage if available. If not, query the network.
             mRedditNewsLocalDataSource.getNews(new LoadNewsCallback() {
