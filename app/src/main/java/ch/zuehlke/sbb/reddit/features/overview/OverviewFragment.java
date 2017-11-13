@@ -30,8 +30,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class OverviewFragment extends Fragment implements OverviewContract.View {
 
-    private static final String COMMENT_SECION = "comments/";
-
     private OverviewContract.Presenter mOverviewPresenter;
     private RedditOverviewAdapter mOverviewAdapter;
     private View mNoNewsView;

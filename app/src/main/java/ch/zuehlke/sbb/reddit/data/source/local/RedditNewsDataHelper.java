@@ -39,7 +39,7 @@ public class RedditNewsDataHelper extends SQLiteOpenHelper {
             RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY+ TEXT_TYPE + COMMA_SEP +
             RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_DEPTH + LONG_TYPE + COMMA_SEP +
             RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY_HTML + TEXT_TYPE + COMMA_SEP +
-            RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK + TEXT_TYPE + COMMA_SEP +
+            RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENTPERMALINK + TEXT_TYPE + COMMA_SEP +
             RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ORDERING + LONG_TYPE +
             " )";
 

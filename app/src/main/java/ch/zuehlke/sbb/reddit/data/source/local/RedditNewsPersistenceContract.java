@@ -33,7 +33,7 @@ public class RedditNewsPersistenceContract {
         public static final String COLUMN_NAME_CREATED = "createdAt";
         public static final String COLUMN_NAME_DEPTH = "depth";
         public static final String COLUMN_NAME_BODY_HTML = "bodyHTML";
-        public static final String COLUMN_NAME_PERMALINK = "permaLink";
+        public static final String COLUMN_NAME_PARENTPERMALINK = "parentPermaLink";
         public static final String COLUMN_NAME_ORDERING = "ordering";
     }
 }

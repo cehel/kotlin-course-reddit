@@ -104,15 +104,15 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
                 RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED,
                 RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY_HTML,
                 RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY,
-                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK,
+                RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENTPERMALINK,
                 RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ORDERING,
                 RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR
         };
 
-        String selection =RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK+" like '" + permalink + "'";
+        String selection =RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENTPERMALINK +" like '" + permalink + "'";
 
         Cursor c = db.query(
-                RedditNewsPersistenceContract.RedditNewsEntry.TABLE_NAME, projection, selection, null, null, null, RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR);
+                RedditNewsPersistenceContract.RedditPostEntry.TABLE_NAME, projection, selection, null, null, null, RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ORDERING);
 
         if (c != null && c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -122,7 +122,7 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
                 long created = c.getLong(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED));
                 String bodyHtml = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY_HTML));
                 String body = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY));
-                String permaLink = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK));
+                String permaLink = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENTPERMALINK));
                 long ordering = c.getLong(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ORDERING));
                 String author = c.getString(c.getColumnIndexOrThrow(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR));
 
@@ -155,7 +155,7 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY,data.getBody());
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED,data.getCreatedUtc());
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ID,data.getId());
-        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PERMALINK,data.getPermaLink());
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENTPERMALINK,data.getParentPermaLink());
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_DEPTH,data.getDepth());
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENT_ID,data.getParentId());
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY_HTML,data.getBody_html());
@@ -166,6 +166,16 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
 
         db.close();
 
+    }
+
+    @Override
+    public void deletePostsWithPermaLink(@NonNull String permaLink){
+
+        String where = RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENTPERMALINK +" like '"+permaLink+"'";
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(RedditNewsPersistenceContract.RedditPostEntry.TABLE_NAME, where, null);
+        db.close();
     }
 
     @Override

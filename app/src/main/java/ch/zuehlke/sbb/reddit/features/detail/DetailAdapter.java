@@ -13,6 +13,7 @@ import java.util.List;
 
 import ch.zuehlke.sbb.reddit.R;
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPost;
+import ch.zuehlke.sbb.reddit.models.RedditPostsData;
 import ch.zuehlke.sbb.reddit.util.DateUtils;
 
 /**
@@ -22,7 +23,7 @@ import ch.zuehlke.sbb.reddit.util.DateUtils;
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.DetailViewHolder>{
 
 
-    private List<RedditPost> mItems = new ArrayList<>();
+    private List<RedditPostsData> mItems = new ArrayList<>();
     private Context mContext;
     public DetailAdapter(Context context){
         mContext = context;
@@ -36,15 +37,15 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.DetailView
 
     @Override
     public void onBindViewHolder(DetailViewHolder holder, int position) {
-        RedditPost post = mItems.get(position);
+        RedditPostsData post = mItems.get(position);
 
         holder.mUsername.setText(post.author);
         holder.mText.setText(post.body);
-        holder.mCreated.setText(DateUtils.friendlyTime(post.created_utc));
+        holder.mCreated.setText(DateUtils.friendlyTime(post.createdUtc));
         setDepthPadding(holder.itemView,post.depth);
     }
 
-    public void clearAndAddPosts(List<RedditPost> newsData){
+    public void clearAndAddPosts(List<RedditPostsData> newsData){
         int previousItemSize = mItems.size();
         mItems.clear();
         notifyItemRangeRemoved(0,previousItemSize);

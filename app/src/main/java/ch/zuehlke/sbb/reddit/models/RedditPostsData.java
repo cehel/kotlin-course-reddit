@@ -12,10 +12,10 @@ public class RedditPostsData {
     public long createdUtc = 0;
     public int depth = 0;
     public long ordering = -1L;
-    public String permaLink = null;
     public String body_html = null;
+    public String parentPermaLink = null;
 
-    public RedditPostsData(String id, String parentId, String author, String body, long created_utc, int depth, String body_html, String permaLink, long ordering) {
+    public RedditPostsData(String id, String parentId, String author, String body, long created_utc, int depth, String body_html, String parentPermaLink, long ordering) {
         this.id = id;
         this.parentId = parentId;
         this.author = author;
@@ -23,7 +23,7 @@ public class RedditPostsData {
         this.createdUtc = created_utc;
         this.depth = depth;
         this.body_html = body_html;
-        this.permaLink = permaLink;
+        this.parentPermaLink = parentPermaLink;
         this.ordering = ordering;
     }
 
@@ -59,7 +59,7 @@ public class RedditPostsData {
         return ordering;
     }
 
-    public String getPermaLink() {
-        return permaLink;
+    public String getParentPermaLink() {
+        return parentPermaLink;
     }
 }

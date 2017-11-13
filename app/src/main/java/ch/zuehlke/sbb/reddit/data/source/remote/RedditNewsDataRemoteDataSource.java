@@ -35,6 +35,7 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
 
     private static final String TAG = "RemoteDataSource";
     private String after = "";
+    private int order =-1;
 
     private static RedditNewsDataRemoteDataSource INSTANCE;
     private RedditAPI mRedditAPI;
@@ -106,7 +107,7 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
     }
 
     @Override
-    public void getPosts(@NonNull final LoadPostsCallback callback, String title) {
+    public void getPosts(@NonNull final LoadPostsCallback callback, final String title) {
         Call<ResponseBody> call = mRedditAPI.getRedditPosts(title, "new");
         call.enqueue(new Callback<ResponseBody>(){
 
@@ -115,7 +116,8 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
                 List<RedditPostsData> redditPosts = new ArrayList<>();
                 String parentId = null;
                 List<RedditPostElement> elements = parseResponseToPostElements(response.body());
-                redditPosts = flattenRetrofitResponse(elements);
+                order = 0;
+                redditPosts = flattenRetrofitResponse(elements, title);
                 callback.onPostsLoaded(redditPosts);
             }
 
@@ -132,19 +134,23 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
         //Remotly its not used
     }
 
-    private List<RedditPostsData> flattenRetrofitResponse(List<RedditPostElement> response){
+    @Override
+    public void deletePostsWithPermaLink(@NonNull String permaLink) {
+
+    }
+
+    private List<RedditPostsData> flattenRetrofitResponse(List<RedditPostElement> response, String parentPermaLink){
         List<RedditPostsData> flatten = new ArrayList<>();
-        int order = -1;
         for (RedditPostElement redditPostElement : response) {
             if(redditPostElement instanceof RedditPostElement.DataRedditPostElement){
                 RedditPostElement.DataRedditPostElement dataElement = (RedditPostElement.DataRedditPostElement) redditPostElement;
                 RedditPost data = dataElement.data;
                 if(dataElement.data != null){
                     if(!Strings.isNullOrEmpty(dataElement.data.body_html)){
-                        RedditPostsData postData = new RedditPostsData(data.id,null, data.author,data.body, data.created_utc, data.depth,data.body_html, data.permalink,order++);
+                        RedditPostsData postData = new RedditPostsData(data.id,null, data.author,data.body, data.created_utc, data.depth,data.body_html, data.permalink, order++);
                         flatten.add(postData);
                     }else{
-                        flatten.addAll(recursivlyParseResponse(dataElement, data.id, order++));
+                        flatten.addAll(recursivlyParseResponse(dataElement, data.id,parentPermaLink));
                     }
                 }
             }
@@ -152,17 +158,17 @@ public class RedditNewsDataRemoteDataSource implements RedditDataSource {
         return flatten;
     }
 
-    private List<RedditPostsData> recursivlyParseResponse(RedditPostElement.DataRedditPostElement dataRedditPostElement, String parentId, int order){
+    private List<RedditPostsData> recursivlyParseResponse(RedditPostElement.DataRedditPostElement dataRedditPostElement, String parentId, String parentPermaLink){
         List<RedditPostsData> posts = new ArrayList<>();
         for (RedditPostElement child : dataRedditPostElement.data.children) {
             if(child instanceof RedditPostElement.DataRedditPostElement){
                 RedditPostElement.DataRedditPostElement childData = (RedditPostElement.DataRedditPostElement) child;
                 RedditPost data = childData.data;
                 if(data != null){
-                    RedditPostsData postData = new RedditPostsData(data.id,parentId, data.author,data.body, data.created_utc, data.depth,data.body_html, data.permalink, order++);
+                    RedditPostsData postData = new RedditPostsData(data.id,parentId, data.author,data.body, data.created_utc, data.depth,data.body_html, parentPermaLink, order++);
                     posts.add(postData);
                     if(data.replies != null && data.replies instanceof RedditPostElement.DataRedditPostElement){
-                        posts.addAll(recursivlyParseResponse((RedditPostElement.DataRedditPostElement) data.replies, data.id,order++));
+                        posts.addAll(recursivlyParseResponse((RedditPostElement.DataRedditPostElement) data.replies, data.id,parentPermaLink));
                     }
                 }
             }

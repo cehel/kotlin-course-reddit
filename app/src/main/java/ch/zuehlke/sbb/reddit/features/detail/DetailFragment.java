@@ -21,6 +21,7 @@ import ch.zuehlke.sbb.reddit.R;
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPost;
 import ch.zuehlke.sbb.reddit.features.overview.InfiniteScrollListener;
 import ch.zuehlke.sbb.reddit.features.overview.ScrollChildSwipeRefreshLayout;
+import ch.zuehlke.sbb.reddit.models.RedditPostsData;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -104,7 +105,7 @@ public class DetailFragment extends Fragment implements DetailContract.View {
     }
 
     @Override
-    public void showRedditPosts(List<RedditPost> posts) {
+    public void showRedditPosts(List<RedditPostsData> posts) {
         Log.i(TAG,"Got "+posts.size() + " posts");
         mAdapter.clearAndAddPosts(posts);
     }

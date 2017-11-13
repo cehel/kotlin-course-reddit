@@ -1,5 +1,8 @@
 package ch.zuehlke.sbb.reddit.data.source;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class RedditRepository implements RedditDataSource {
 
     private final RedditDataSource mRedditNewsLocalDataSource;
 
+    private Context mContext;
+
     private static final String COMMENT_SECION = "comments/";
 
     /**
@@ -40,9 +45,10 @@ public class RedditRepository implements RedditDataSource {
 
     // Prevent direct instantiation.
     private RedditRepository(@NonNull RedditDataSource newsRemoteDataSource,
-                             @NonNull RedditDataSource newsLocalDataSource) {
+                             @NonNull RedditDataSource newsLocalDataSource, Context context) {
         mRedditNewsRemoteDataSource = checkNotNull(newsRemoteDataSource);
         mRedditNewsLocalDataSource = checkNotNull(newsLocalDataSource);
+        mContext = context;
     }
 
     /**
@@ -53,15 +59,15 @@ public class RedditRepository implements RedditDataSource {
      * @return the {@link RedditRepository} instance
      */
     public static RedditRepository getInstance(RedditDataSource newsRemoteDataSource,
-                                               RedditDataSource newsLocalDataSource) {
+                                               RedditDataSource newsLocalDataSource, Context context) {
         if (INSTANCE == null) {
-            INSTANCE = new RedditRepository(newsRemoteDataSource, newsLocalDataSource);
+            INSTANCE = new RedditRepository(newsRemoteDataSource, newsLocalDataSource, context);
         }
         return INSTANCE;
     }
 
     /**
-     * Used to force {@link #getInstance(RedditDataSource, RedditDataSource)} to create a new instance
+     * Used to force {@link #getInstance(RedditDataSource, RedditDataSource, Context)} to create a new instance
      * next time it's called.
      */
     public static void destroyInstance() {
@@ -92,6 +98,13 @@ public class RedditRepository implements RedditDataSource {
         });
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     @Override
     public void getNews(@NonNull final LoadNewsCallback callback) {
         checkNotNull(callback);
@@ -103,24 +116,7 @@ public class RedditRepository implements RedditDataSource {
             return;
         }
 
-        if (mCacheIsDirty) {
-            // If the cache is dirty we need to fetch new data from the network. The Cache is only dirty, when a refreshNews is going on
-            getNewsFromRemoteDataSource(new LoadNewsCallback() {
-                @Override
-                public void onNewsLoaded(List<RedditNewsData> data) {
-                    for(RedditNewsData newsData : data){
-                        saveRedditNews(newsData);
-                    }
-                    refreshCache(data);
-                    callback.onNewsLoaded(new ArrayList<RedditNewsData>(mCacheNews.values()));
-                }
-
-                @Override
-                public void onDataNotAvailable() {
-                        callback.onDataNotAvailable();
-                }
-            });
-        } else {
+        if (!isNetworkAvailable()){
             // Query the local storage if available. If not, query the network.
             mRedditNewsLocalDataSource.getNews(new LoadNewsCallback() {
                 @Override
@@ -131,14 +127,50 @@ public class RedditRepository implements RedditDataSource {
 
                 @Override
                 public void onDataNotAvailable() {
-                    getNewsFromRemoteDataSource(callback);
+                    callback.onDataNotAvailable();
                 }
             });
+
+        } else {
+            if (mCacheIsDirty) {
+                // If the cache is dirty we need to fetch new data from the network. The Cache is only dirty, when a refreshNews is going on
+                getNewsFromRemoteDataSource(new LoadNewsCallback() {
+                    @Override
+                    public void onNewsLoaded(List<RedditNewsData> data) {
+                        for(RedditNewsData newsData : data){
+                            saveRedditNews(newsData);
+                        }
+                        refreshCache(data);
+                        callback.onNewsLoaded(new ArrayList<RedditNewsData>(mCacheNews.values()));
+                    }
+
+                    @Override
+                    public void onDataNotAvailable() {
+                        callback.onDataNotAvailable();
+                    }
+                });
+            } else {
+                // Query the local storage if available. If not, query the network.
+                mRedditNewsLocalDataSource.getNews(new LoadNewsCallback() {
+                    @Override
+                    public void onNewsLoaded(List<RedditNewsData> tasks) {
+                        refreshCache(tasks);
+                        callback.onNewsLoaded(new ArrayList<>(mCacheNews.values()));
+                    }
+
+                    @Override
+                    public void onDataNotAvailable() {
+                        getNewsFromRemoteDataSource(callback);
+                    }
+                });
+            }
         }
+
+
     }
 
     @Override
-    public void getPosts(@NonNull final LoadPostsCallback callback, String permalink) {
+    public void getPosts(@NonNull final LoadPostsCallback callback, final String permalink) {
         mRedditNewsLocalDataSource.getPosts(new LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<RedditPostsData> posts) {
@@ -149,10 +181,12 @@ public class RedditRepository implements RedditDataSource {
             public void onDataNotAvailable() {
 
             }
-        },permalink);
+        },convertURLToRemote(permalink));
+
         mRedditNewsRemoteDataSource.getPosts(new LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<RedditPostsData> posts) {
+                mRedditNewsLocalDataSource.deletePostsWithPermaLink(permalink);
                 for(RedditPostsData data: posts){
                     mRedditNewsLocalDataSource.savePosts(data);
                 }
@@ -174,6 +208,11 @@ public class RedditRepository implements RedditDataSource {
 
     @Override
     public void savePosts(@NonNull RedditPostsData data) {
+
+    }
+
+    @Override
+    public void deletePostsWithPermaLink(@NonNull String permaLink) {
 
     }
 

@@ -37,6 +37,8 @@ public interface RedditDataSource {
 
     void savePosts(@NonNull RedditPostsData data);
 
+    void deletePostsWithPermaLink(@NonNull String permaLink);
+
     void refreshNews();
 
     void deleteAllNews();
