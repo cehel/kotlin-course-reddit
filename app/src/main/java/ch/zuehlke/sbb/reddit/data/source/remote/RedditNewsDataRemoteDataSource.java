@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 import ch.zuehlke.sbb.reddit.data.source.RedditDataSource;
-import ch.zuehlke.sbb.reddit.data.source.remote.model.RedditNewsAPIChildrenResponse;
-import ch.zuehlke.sbb.reddit.data.source.remote.model.RedditNewsAPIChildrenResponseData;
-import ch.zuehlke.sbb.reddit.data.source.remote.model.RedditNewsAPIResponse;
+import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIChildrenResponse;
+import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIChildrenResponseData;
+import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIResponse;
 import ch.zuehlke.sbb.reddit.models.RedditNewsData;
 import retrofit2.Call;
 import retrofit2.Callback;

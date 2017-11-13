@@ -23,4 +23,6 @@ public class RedditNewsPersistenceContract {
         public static final String COLUMN_NAME_PERMA_LINK = "permaLink";
 
     }
+
+
 }

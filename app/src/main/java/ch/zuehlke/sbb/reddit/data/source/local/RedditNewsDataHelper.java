@@ -33,6 +33,8 @@ public class RedditNewsDataHelper extends SQLiteOpenHelper {
             " )";
 
 
+
+
     public RedditNewsDataHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }

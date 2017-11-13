@@ -12,7 +12,7 @@ public final class RedditPost {
     public RedditPostElement replies = null;
     public String author = null;
     public String body = null;
-    public long created = 0;
+    public long created_utc = 0;
     public int depth = 0;
     public String body_html = null;
 

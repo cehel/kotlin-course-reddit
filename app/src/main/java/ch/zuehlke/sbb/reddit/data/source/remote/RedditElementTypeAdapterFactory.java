@@ -65,7 +65,6 @@ public final class RedditElementTypeAdapterFactory implements TypeAdapterFactory
             } else if ( value instanceof RedditPostElement.ReferenceRedditPostElement) {
                 out.value(((RedditPostElement.ReferenceRedditPostElement) value).reference);
             } else {
-                // null-protection is configured with .nullSafe() above
                 throw new AssertionError(value.getClass());
             }
         }
@@ -85,7 +84,7 @@ public final class RedditElementTypeAdapterFactory implements TypeAdapterFactory
                 case NAME:
                 case NUMBER:
                 case BOOLEAN:
-                case NULL: // null-protection is configured with .nullSafe() above
+                case NULL:
                 case END_DOCUMENT:
                     throw new MalformedJsonException("Cannot parse " + token + " at " + in);
                 default:

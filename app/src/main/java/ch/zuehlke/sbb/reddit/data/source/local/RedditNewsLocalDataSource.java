@@ -93,7 +93,7 @@ public class RedditNewsLocalDataSource implements RedditDataSource {
 
     @Override
     public void refreshNews() {
-        // Not required because the {@link RedditNewsRepository} handles the logic of refreshing the
+        // Not required because the {@link RedditRepository} handles the logic of refreshing the
         // news from all the available redditPost sources.
     }
 

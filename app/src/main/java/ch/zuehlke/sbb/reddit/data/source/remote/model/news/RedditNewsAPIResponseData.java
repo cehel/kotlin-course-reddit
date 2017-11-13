@@ -1,4 +1,4 @@
-package ch.zuehlke.sbb.reddit.data.source.remote.model;
+package ch.zuehlke.sbb.reddit.data.source.remote.model.news;
 
 import com.google.gson.annotations.Expose;
 

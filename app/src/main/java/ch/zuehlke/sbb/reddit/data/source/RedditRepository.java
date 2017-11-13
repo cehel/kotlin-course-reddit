@@ -15,9 +15,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by chsc on 08.11.17.
  */
 
-public class RedditNewsRepository implements RedditDataSource {
+public class RedditRepository implements RedditDataSource {
 
-    private static RedditNewsRepository INSTANCE = null;
+    private static RedditRepository INSTANCE = null;
 
     private final RedditDataSource mRedditNewsRemoteDataSource;
 
@@ -36,8 +36,8 @@ public class RedditNewsRepository implements RedditDataSource {
 
 
     // Prevent direct instantiation.
-    private RedditNewsRepository(@NonNull RedditDataSource newsRemoteDataSource,
-                            @NonNull RedditDataSource newsLocalDataSource) {
+    private RedditRepository(@NonNull RedditDataSource newsRemoteDataSource,
+                             @NonNull RedditDataSource newsLocalDataSource) {
         mRedditNewsRemoteDataSource = checkNotNull(newsRemoteDataSource);
         mRedditNewsLocalDataSource = checkNotNull(newsLocalDataSource);
     }
@@ -47,12 +47,12 @@ public class RedditNewsRepository implements RedditDataSource {
      *
      * @param newsLocalDataSource the backend redditPost source
      * @param newsLocalDataSource  the device storage redditPost source
-     * @return the {@link RedditNewsRepository} instance
+     * @return the {@link RedditRepository} instance
      */
-    public static RedditNewsRepository getInstance(RedditDataSource newsRemoteDataSource,
-                                                   RedditDataSource newsLocalDataSource) {
+    public static RedditRepository getInstance(RedditDataSource newsRemoteDataSource,
+                                               RedditDataSource newsLocalDataSource) {
         if (INSTANCE == null) {
-            INSTANCE = new RedditNewsRepository(newsRemoteDataSource, newsLocalDataSource);
+            INSTANCE = new RedditRepository(newsRemoteDataSource, newsLocalDataSource);
         }
         return INSTANCE;
     }
