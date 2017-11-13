@@ -6,13 +6,17 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository;
 import ch.zuehlke.sbb.reddit.data.source.local.RedditNewsLocalDataSource;
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI;
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditNewsDataRemoteDataSource;
+import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -29,6 +33,13 @@ public class Injection {
 
     private static RedditAPI redditAPI;
     private static Retrofit retrofit;
+
+    public static final Type type = new TypeToken<List<RedditPostElement>>() {
+    }.getType();
+
+    public static final Gson gson = new GsonBuilder()
+            .registerTypeAdapterFactory(getElementTypeAdapterFactory())
+            .create();
 
     public static RedditRepository provideRedditNewsRepository(@NonNull Context context) {
          checkNotNull(context);
