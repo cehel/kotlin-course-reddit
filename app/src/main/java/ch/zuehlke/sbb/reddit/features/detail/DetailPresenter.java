@@ -11,10 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import ch.zuehlke.sbb.reddit.Injection;
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository;
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI;
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPost;
@@ -33,12 +31,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DetailPresenter implements DetailContract.Presenter {
 
-    private static final Type type = new TypeToken<List<RedditPostElement>>(){}.getType();
+    private static final Type type = new TypeToken<List<RedditPostElement>>() {
+    }.getType();
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapterFactory(getElementTypeAdapterFactory())
             .create();
-
 
 
     private static final String TAG = "DetailPresenter";
@@ -48,33 +46,43 @@ public class DetailPresenter implements DetailContract.Presenter {
     private RedditRepository mRepository;
     private RedditAPI mRedditAPI;
 
-    public DetailPresenter(@NonNull  DetailContract.View detailView, @NonNull RedditRepository repository, @NonNull String redditUrl, RedditAPI redditAPI){
-            mRepository = checkNotNull(repository, "The repository cannot be null");
-            mDetailView = checkNotNull(detailView,"The DetailView cannot be null");
-            checkNotNull(redditUrl, "The reddit url cannot be null");
-            mRedditAPI = checkNotNull(redditAPI, "RedditAPI cannot be null");
-            mRedditUrl = checkNotNull(redditUrl,"The reddit url cannot be null");
-            detailView.setPresenter(this);
+    public DetailPresenter(@NonNull DetailContract.View detailView, @NonNull RedditRepository repository, @NonNull String redditUrl, RedditAPI redditAPI) {
+        mRepository = checkNotNull(repository, "The repository cannot be null");
+        mDetailView = checkNotNull(detailView, "The DetailView cannot be null");
+        checkNotNull(redditUrl, "The reddit url cannot be null");
+        mRedditAPI = checkNotNull(redditAPI, "RedditAPI cannot be null");
+        mRedditUrl = checkNotNull(redditUrl, "The reddit url cannot be null");
+        detailView.setPresenter(this);
     }
 
     @Override
     public void start() {
-            loadRedditPosts(mRedditUrl);
+        loadRedditPosts();
     }
 
-    @Override
-    public void loadRedditPosts(String url) {
 
-        mRedditAPI.getRedditPosts(mRedditUrl,"new").enqueue(new Callback<ResponseBody>() {
+    @Override
+    public void loadRedditPosts() {
+        loadRedditPosts(mRedditUrl);
+    }
+
+
+    public void loadRedditPosts(String url) {
+        if (mDetailView.isActive()) {
+            mDetailView.setLoadingIndicator(true);
+        }
+
+        mRedditAPI.getRedditPosts(mRedditUrl, "new").enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i(TAG,"response: "+response);
+                Log.i(TAG, "response: " + response);
 
 
                 try {
                     final List<RedditPostElement> redditPostElements = gson.fromJson(response.body().string(), type);
                     List<RedditPost> parsedElements = flattenRetrofitResponse(redditPostElements);
-                    if(mDetailView.isActive()){
+                    if (mDetailView.isActive()) {
+                        mDetailView.setLoadingIndicator(false);
                         mDetailView.showRedditPosts(parsedElements);
                     }
                 } catch (IOException e) {
@@ -86,20 +94,23 @@ public class DetailPresenter implements DetailContract.Presenter {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if (mDetailView.isActive()) {
+                    mDetailView.showRedditNewsLoadingError();
+                }
 
             }
         });
     }
 
-    private List<RedditPost> flattenRetrofitResponse(List<RedditPostElement> response){
+    private List<RedditPost> flattenRetrofitResponse(List<RedditPostElement> response) {
         List<RedditPost> flatten = new ArrayList<>();
         for (RedditPostElement redditPostElement : response) {
-            if(redditPostElement instanceof RedditPostElement.DataRedditPostElement){
+            if (redditPostElement instanceof RedditPostElement.DataRedditPostElement) {
                 RedditPostElement.DataRedditPostElement dataElement = (RedditPostElement.DataRedditPostElement) redditPostElement;
-                if(dataElement.data != null){
-                    if(!Strings.isNullOrEmpty(dataElement.data.body_html)){
+                if (dataElement.data != null) {
+                    if (!Strings.isNullOrEmpty(dataElement.data.body_html)) {
                         flatten.add(dataElement.data);
-                    }else{
+                    } else {
                         flatten.addAll(recursivlyParseResponse(dataElement));
                     }
                 }
@@ -108,14 +119,14 @@ public class DetailPresenter implements DetailContract.Presenter {
         return flatten;
     }
 
-    private List<RedditPost> recursivlyParseResponse(RedditPostElement.DataRedditPostElement dataRedditPostElement){
+    private List<RedditPost> recursivlyParseResponse(RedditPostElement.DataRedditPostElement dataRedditPostElement) {
         List<RedditPost> posts = new ArrayList<>();
         for (RedditPostElement child : dataRedditPostElement.data.children) {
-            if(child instanceof RedditPostElement.DataRedditPostElement){
+            if (child instanceof RedditPostElement.DataRedditPostElement) {
                 RedditPostElement.DataRedditPostElement childData = (RedditPostElement.DataRedditPostElement) child;
-                if(childData.data != null){
+                if (childData.data != null) {
                     posts.add(childData.data);
-                    if(childData.data.replies != null && childData.data.replies instanceof RedditPostElement.DataRedditPostElement){
+                    if (childData.data.replies != null && childData.data.replies instanceof RedditPostElement.DataRedditPostElement) {
                         posts.addAll(recursivlyParseResponse((RedditPostElement.DataRedditPostElement) childData.data.replies));
                     }
                 }
@@ -124,7 +135,5 @@ public class DetailPresenter implements DetailContract.Presenter {
         }
         return posts;
     }
-
-
 
 }

@@ -19,7 +19,7 @@
             android:theme="@style/Toolbar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </android.support.design.widget.AppBarLayout>
-å
+
     <FrameLayout
         android:id="@+id/contentFrame"
         android:layout_width="match_parent"

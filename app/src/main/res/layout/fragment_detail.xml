@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ch.zuehlke.sbb.reddit.features.overview.ScrollChildSwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/refreshLayout"
+    >
 
-</LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/redditPostView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/noRedditPostVIew"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/overview_screen_no_reddit_news"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:gravity="center_vertical"
+            />
+
+    </RelativeLayout>
+
+
+
+</ch.zuehlke.sbb.reddit.features.overview.ScrollChildSwipeRefreshLayout>

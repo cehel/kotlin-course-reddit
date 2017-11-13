@@ -14,9 +14,11 @@ public interface DetailContract {
 
     interface View extends BaseView<Presenter>{
         void showRedditPosts(List<RedditPost> posts);
+        void showRedditNewsLoadingError();
+        void setLoadingIndicator(boolean isActive);
     }
 
     interface Presenter extends BasePresenter{
-        void loadRedditPosts(String url);
+        void loadRedditPosts();
     }
 }
