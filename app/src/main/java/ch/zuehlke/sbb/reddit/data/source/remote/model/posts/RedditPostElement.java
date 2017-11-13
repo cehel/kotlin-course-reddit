@@ -14,7 +14,6 @@ public abstract class RedditPostElement {
     }
 
 
-
     public static RedditPostElement reference(final String reference) {
         return new ReferenceRedditPostElement(reference);
     }
@@ -28,13 +27,6 @@ public abstract class RedditPostElement {
         @Expose
         public final RedditPost data = null;
 
-        public String getKind() {
-            return kind;
-        }
-
-        public RedditPost getData() {
-            return data;
-        }
 
         public DataRedditPostElement() {
         }
