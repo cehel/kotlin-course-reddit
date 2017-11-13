@@ -9,4 +9,6 @@
     <string name="login_screen_invalid_password">Invalid password</string>
     <string name="overview_screen_no_reddit_news">No Reddit News available</string>
     <string name="overview_screen_error_loading_reddit_news">Error while loading reddit news</string>
+    <string name="overview_screen_error_loading_reddit_posts">Error while loading reddit post</string>
+    <string name="detail_screen_middle_dot">\u00b7</string>
 </resources>
