@@ -1,29 +1,14 @@
 package ch.zuehlke.sbb.reddit.features.detail
 
-import android.util.Log
-
-import com.google.common.base.Strings
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-
-import java.io.IOException
-import java.lang.reflect.Type
-import java.util.ArrayList
-
 import ch.zuehlke.sbb.reddit.data.source.RedditDataSource
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI
-import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPost
+import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.Companion.elementTypeAdapterFactory
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement
 import ch.zuehlke.sbb.reddit.models.RedditPostsData
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
-import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.getElementTypeAdapterFactory
 import com.google.common.base.Preconditions.checkNotNull
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 /**
  * Created by chsc on 13.11.17.

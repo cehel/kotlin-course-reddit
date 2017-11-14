@@ -46,14 +46,17 @@ private constructor(context: Context, redditAPI: RedditAPI) : RedditDataSource {
         val call = mRedditAPI.getSortedNews("hot", after, "10")
         call.enqueue(object : Callback<RedditNewsAPIResponse> {
             override fun onResponse(call: Call<RedditNewsAPIResponse>, response: Response<RedditNewsAPIResponse>) {
-                after = response.body().data.after
+                after = response.body().data!!.after!!
                 Log.i(TAG, "Recieved reddit response: " + response.body())
                 val redditNewsDataList = ArrayList<RedditNewsData>()
-                for (child in response.body().data.children) {
+                for (child in response.body().data!!.children!!) {
                     val data = child.data
-                    Log.i(TAG, "child date: " + Date(data.created))
-                    redditNewsDataList.add(RedditNewsData(data.author, data.title, data.num_comments, data.created, data.thumbnail, data.url, data.id, data.permalink))
-                }
+                    Log.i(TAG, "child date: " + Date(data!!.created))
+                    data?.let {
+                        redditNewsDataList.add(RedditNewsData(data.author!!, data.title!!, data.num_comments, data.created, data.thumbnail!!, data.url!!, data.id!!, data.permalink!!))
+
+                    }
+                     }
                 callback.onNewsLoaded(redditNewsDataList)
             }
 
@@ -70,12 +73,15 @@ private constructor(context: Context, redditAPI: RedditAPI) : RedditDataSource {
         val call = mRedditAPI.getSortedNews("hot", "", "10")
         call.enqueue(object : Callback<RedditNewsAPIResponse> {
             override fun onResponse(call: Call<RedditNewsAPIResponse>, response: Response<RedditNewsAPIResponse>) {
-                after = response.body().data.after
+                after = response.body().data!!.after!!
                 Log.i(TAG, "Recieved reddit response: " + response.body())
                 val redditNewsDataList = ArrayList<RedditNewsData>()
-                for (child in response.body().data.children) {
+                for (child in response.body().data!!.children!!) {
                     val data = child.data
-                    redditNewsDataList.add(RedditNewsData(data.author, data.title, data.num_comments, data.created, data.thumbnail, data.url, data.id, data.permalink))
+                    data?.let {
+                        redditNewsDataList.add(RedditNewsData(data.author!!, data.title!!, data.num_comments, data.created, data.thumbnail!!, data.url!!, data.id!!, data.permalink!!))
+                    }
+
                 }
                 callback.onNewsLoaded(redditNewsDataList)
             }
@@ -123,10 +129,16 @@ private constructor(context: Context, redditAPI: RedditAPI) : RedditDataSource {
                 val data = dataElement.data
                 if (dataElement.data != null) {
                     if (!Strings.isNullOrEmpty(dataElement.data.body_html)) {
-                        val postData = RedditPostsData(data!!.id, null, data.author, data.body, data.created_utc, data.depth, data.body_html, data.permalink, order++.toLong())
-                        flatten.add(postData)
+                        data?.let {
+                            val postData = RedditPostsData(data.id!!, null, data.author!!, data.body!!, data.created_utc, data.depth, data.body_html!!, data.permalink!!, order++.toLong())
+                            flatten.add(postData)
+                        }
+
                     } else {
-                        flatten.addAll(recursivlyParseResponse(dataElement, data!!.id, parentPermaLink))
+                        data?.let {
+                            flatten.addAll(recursivlyParseResponse(dataElement, data!!.id, parentPermaLink))
+                        }
+
                     }
                 }
             }
@@ -134,17 +146,20 @@ private constructor(context: Context, redditAPI: RedditAPI) : RedditDataSource {
         return flatten
     }
 
-    private fun recursivlyParseResponse(dataRedditPostElement: RedditPostElement.DataRedditPostElement, parentId: String, parentPermaLink: String): List<RedditPostsData> {
+    private fun recursivlyParseResponse(dataRedditPostElement: RedditPostElement.DataRedditPostElement, parentId: String?, parentPermaLink: String): List<RedditPostsData> {
         val posts = ArrayList<RedditPostsData>()
         for (child in dataRedditPostElement.data!!.children!!) {
             if (child is RedditPostElement.DataRedditPostElement) {
                 val data = child.data
                 if (data != null) {
-                    val postData = RedditPostsData(data.id, parentId, data.author, data.body, data.created_utc, data.depth, data.body_html, parentPermaLink, order++.toLong())
-                    posts.add(postData)
-                    if (data.replies != null && data.replies is RedditPostElement.DataRedditPostElement) {
-                        posts.addAll(recursivlyParseResponse(data.replies as RedditPostElement.DataRedditPostElement, data.id, parentPermaLink))
+                    data?.let {
+                        val postData = RedditPostsData(data.id!!, parentId, data.author, data.body, data.created_utc, data.depth, data.body_html, parentPermaLink, order++.toLong())
+                        posts.add(postData)
+                        if (data.replies != null && data.replies is RedditPostElement.DataRedditPostElement) {
+                            posts.addAll(recursivlyParseResponse(data.replies as RedditPostElement.DataRedditPostElement, data.id!!, parentPermaLink))
+                        }
                     }
+
                 }
             }
 
@@ -158,10 +173,10 @@ private constructor(context: Context, redditAPI: RedditAPI) : RedditDataSource {
         try {
             redditPostElements = Injection.gson.fromJson<List<RedditPostElement>>(response.string(), Injection.type)
         } catch (e: IOException) {
-            e.printStackTrace()
+           Log.e(TAG,"Error while parsing respone $e")
         }
 
-        return redditPostElements
+        return redditPostElements!!
 
     }
 
@@ -187,7 +202,7 @@ private constructor(context: Context, redditAPI: RedditAPI) : RedditDataSource {
             if (INSTANCE == null) {
                 INSTANCE = RedditNewsDataRemoteDataSource(context, redditAPI)
             }
-            return INSTANCE
+            return INSTANCE!!
         }
     }
 }

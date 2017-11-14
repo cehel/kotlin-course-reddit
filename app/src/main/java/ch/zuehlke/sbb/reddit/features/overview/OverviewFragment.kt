@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import ch.zuehlke.sbb.reddit.R
 import ch.zuehlke.sbb.reddit.features.detail.DetailActivity
 import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditNewsDelegateAdapter
+import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditOverviewAdapter
 import ch.zuehlke.sbb.reddit.models.RedditNewsData
 
@@ -32,7 +33,11 @@ class OverviewFragment : Fragment(), OverviewContract.View {
     private var mNewsView: RecyclerView? = null
 
 
-    private val listener = RedditNewsDelegateAdapter.OnNewsSelectedListener { url -> showRedditNewsDetails(url) }
+    private val listener = object: OnNewsSelectedListener {
+        override fun onNewsSelected(url: String) {
+            showRedditNewsDetails(url)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater!!.inflate(R.layout.fragment_overview, container, false)
@@ -54,7 +59,7 @@ class OverviewFragment : Fragment(), OverviewContract.View {
                 mOverviewPresenter!!.loadMoreRedditNews()
             }
         }
-        swipeRefreshLayout.setScrollUpChild(mNewsView)
+        swipeRefreshLayout.setScrollUpChild(mNewsView!!)
         swipeRefreshLayout.setOnRefreshListener {
             infiniteScrollListener.reset()
             mOverviewPresenter!!.loadRedditNews(false)

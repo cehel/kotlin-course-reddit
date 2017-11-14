@@ -1,19 +1,13 @@
 package ch.zuehlke.sbb.reddit.data.source.remote.model.posts
 
-import com.google.gson.Gson
+import ch.zuehlke.sbb.reddit.AbstractTestCase
+import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.Companion.elementTypeAdapterFactory
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-
 import junit.framework.Assert
-
 import org.junit.Test
-
 import java.io.IOException
-import java.lang.reflect.Type
 
-import ch.zuehlke.sbb.reddit.AbstractTestCase
-
-import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.getElementTypeAdapterFactory
 
 /**
  * Created by chsc on 13.11.17.
@@ -31,7 +25,7 @@ class RedditPostRedditElementTypeAdapterFactoryTest : AbstractTestCase() {
         Assert.assertTrue(redditPostElements[1] is RedditPostElement.DataRedditPostElement)
         val element = redditPostElements[1] as RedditPostElement.DataRedditPostElement
         Assert.assertEquals(33, element.data!!.children!!.size)
-        AbstractTestCase.dump(redditPostElements)
+        dump(redditPostElements)
 
     }
 

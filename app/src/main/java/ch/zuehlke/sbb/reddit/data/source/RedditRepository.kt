@@ -190,7 +190,7 @@ private constructor(newsRemoteDataSource: RedditDataSource,
         if (mCacheNews == null) {
             mCacheNews = LinkedHashMap<String, RedditNewsData>()
         }
-        mCacheNews!!.put(data.id, data)
+        mCacheNews!!.put(data.id!!, data)
     }
 
     private fun getNewsFromRemoteDataSource(callback: RedditDataSource.LoadNewsCallback) {
@@ -213,7 +213,7 @@ private constructor(newsRemoteDataSource: RedditDataSource,
         }
         mCacheNews!!.clear()
         for (data in news) {
-            mCacheNews!!.put(data.id, data)
+            mCacheNews!!.put(data.id!!, data)
         }
         mCacheIsDirty = false
     }
@@ -251,7 +251,7 @@ private constructor(newsRemoteDataSource: RedditDataSource,
             if (INSTANCE == null) {
                 INSTANCE = RedditRepository(newsRemoteDataSource, newsLocalDataSource, context)
             }
-            return INSTANCE
+            return INSTANCE!!
         }
 
         /**

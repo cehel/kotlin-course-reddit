@@ -28,7 +28,7 @@ class OverviewActivity : AppCompatActivity() {
         ab!!.setDisplayHomeAsUpEnabled(false)
 
 
-        var overviewFragment: OverviewFragment? = supportFragmentManager.findFragmentById(R.id.contentFrame) as OverviewFragment
+        var overviewFragment: OverviewFragment? = supportFragmentManager.findFragmentById(R.id.contentFrame) as OverviewFragment?
         if (overviewFragment == null) {
             // Create the fragment
             overviewFragment = OverviewFragment.newInstance()

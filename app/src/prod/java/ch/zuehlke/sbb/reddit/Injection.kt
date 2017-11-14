@@ -13,12 +13,13 @@ import java.lang.reflect.Type
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository
 import ch.zuehlke.sbb.reddit.data.source.local.RedditNewsLocalDataSource
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI
+import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.Companion.elementTypeAdapterFactory
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditNewsDataRemoteDataSource
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.getElementTypeAdapterFactory
+
 import com.google.common.base.Preconditions.checkNotNull
 
 /**
@@ -50,7 +51,7 @@ object Injection {
         if (redditAPI == null) {
             redditAPI = retrofit.create<RedditAPI>(RedditAPI::class.java!!)
         }
-        return redditAPI
+        return redditAPI!!
     }
 
     val retroFit: Retrofit
@@ -67,6 +68,6 @@ object Injection {
                         .addConverterFactory(GsonConverterFactory.create(gson))
                         .build()
             }
-            return retrofit
+            return retrofit!!
         }
 }

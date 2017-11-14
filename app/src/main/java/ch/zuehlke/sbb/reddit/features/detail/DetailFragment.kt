@@ -56,7 +56,7 @@ class DetailFragment : Fragment(), DetailContract.View {
         )
 
 
-        swipeRefreshLayout.setScrollUpChild(mPostView)
+        swipeRefreshLayout.setScrollUpChild(mPostView!!)
         swipeRefreshLayout.setOnRefreshListener { mPresenter!!.loadRedditPosts() }
 
 

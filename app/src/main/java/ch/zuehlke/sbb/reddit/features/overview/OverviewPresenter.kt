@@ -37,7 +37,7 @@ class OverviewPresenter(view: OverviewContract.View, redditRepository: RedditRep
 
     override fun showRedditNews(redditNewsData: RedditNewsData) {
         checkNotNull(redditNewsData, "redditNewsData cannot be null!")
-        mOverviewView.showRedditNewsDetails(redditNewsData.id)
+        mOverviewView.showRedditNewsDetails(redditNewsData.id!!)
     }
 
 

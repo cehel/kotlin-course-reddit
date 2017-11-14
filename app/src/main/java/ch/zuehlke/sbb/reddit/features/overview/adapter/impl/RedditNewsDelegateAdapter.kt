@@ -38,7 +38,7 @@ class RedditNewsDelegateAdapter(private val mListener: RedditNewsDelegateAdapter
     }
 
 
-    private inner class RedditNewsViewHolder(parent: ViewGroup, private val mContext: Context) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_overview, parent, false)) {
+    inner class RedditNewsViewHolder(parent: ViewGroup, private val mContext: Context) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_overview, parent, false)) {
 
         private val mThumbnail = itemView.findViewById<ImageView>(R.id.thumbnail)
         private val mTitle = itemView.findViewById<TextView>(R.id.description)
@@ -57,7 +57,7 @@ class RedditNewsDelegateAdapter(private val mListener: RedditNewsDelegateAdapter
                 Picasso.with(mContext).load(data.thumbnailUrl).into(mThumbnail)
             }
 
-            super.itemView.setOnClickListener { mListener.onNewsSelected(data.permaLink) }
+            super.itemView.setOnClickListener { mListener.onNewsSelected(data.permaLink!!) }
         }
     }
 }

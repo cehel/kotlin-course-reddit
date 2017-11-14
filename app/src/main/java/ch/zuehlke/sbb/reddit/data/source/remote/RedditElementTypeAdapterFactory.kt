@@ -12,8 +12,8 @@ import com.google.gson.stream.MalformedJsonException
 import java.io.IOException
 
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement
+import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement.Companion.reference
 
-import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement.reference
 
 /**
  * Created by chsc on 13.11.17.
@@ -28,12 +28,12 @@ class RedditElementTypeAdapterFactory private constructor() : TypeAdapterFactory
             return null
         }
         //
-        val dataElementTypeAdapter = gson.getDelegateAdapter<DataRedditPostElement>(this, dateElementTypeToken)
+        val dataElementTypeAdapter = gson.getDelegateAdapter<RedditPostElement.DataRedditPostElement>(this, dateElementTypeToken)
         val typeAdapter = ElementTypeAdapter(dataElementTypeAdapter) as TypeAdapter<T>
         return typeAdapter.nullSafe()
     }
 
-    private class ElementTypeAdapter private constructor(private val dataTypeAdapter: TypeAdapter<RedditPostElement.DataRedditPostElement>) : TypeAdapter<RedditPostElement>() {
+    private class ElementTypeAdapter  constructor(private val dataTypeAdapter: TypeAdapter<RedditPostElement.DataRedditPostElement>) : TypeAdapter<RedditPostElement>() {
 
         @Throws(IOException::class)
         override fun write(out: JsonWriter, value: RedditPostElement) {

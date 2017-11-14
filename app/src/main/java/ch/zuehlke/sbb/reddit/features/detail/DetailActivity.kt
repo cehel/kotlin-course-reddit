@@ -30,7 +30,7 @@ class DetailActivity : AppCompatActivity() {
 
         val redditUrl = intent.getStringExtra(EXTRA_REDDIT_NEWS_URL)
         Log.i(TAG, "RedditUrl: " + redditUrl)
-        var detailFragment: DetailFragment? = supportFragmentManager.findFragmentById(R.id.contentFrame) as DetailFragment
+        var detailFragment: DetailFragment? = supportFragmentManager.findFragmentById(R.id.contentFrame) as DetailFragment?
         if (detailFragment == null) {
             // Create the fragment
             detailFragment = DetailFragment.newInstance()

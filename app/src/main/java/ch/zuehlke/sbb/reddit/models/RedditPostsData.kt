@@ -4,7 +4,7 @@ package ch.zuehlke.sbb.reddit.models
  * Created by celineheldner on 13.11.17.
  */
 
-class RedditPostsData(var id: String, var parentId: String, author: String, body: String, created_utc: Long, depth: Int, body_html: String, parentPermaLink: String, ordering: Long) {
+class RedditPostsData(var id: String, var parentId: String?, author: String?, body: String?, created_utc: Long, depth: Int, body_html: String?, parentPermaLink: String?, ordering: Long) {
     var author: String? = null
     var body: String? = null
     var createdUtc: Long = 0

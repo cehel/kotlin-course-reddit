@@ -178,7 +178,7 @@ private constructor(context: Context) : RedditDataSource {
             if (INSTANCE == null) {
                 INSTANCE = RedditNewsLocalDataSource(context)
             }
-            return INSTANCE
+            return INSTANCE!!
         }
     }
 }

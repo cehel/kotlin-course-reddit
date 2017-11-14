@@ -60,11 +60,11 @@ class DetailAdapter(private val mContext: Context) : RecyclerView.Adapter<Detail
         view.setPadding(leftDp, normalDp, normalDp, normalDp)
     }
 
-    internal class DetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+     class DetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val mUsername: TextView
-        private val mCreated: TextView
-        private val mText: TextView
+         val mUsername: TextView
+         val mCreated: TextView
+         val mText: TextView
 
         init {
             mUsername = itemView.findViewById<TextView>(R.id.username)

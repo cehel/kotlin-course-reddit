@@ -53,11 +53,11 @@ class RedditOverviewAdapter(listener: RedditNewsDelegateAdapter.OnNewsSelectedLi
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return adapters[viewType].onCreateViewHolder(parent)
+        return adapters[viewType]!!.onCreateViewHolder(parent)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        adapters[getItemViewType(position)].onBindViewHolder(holder, mItems[position])
+        adapters[getItemViewType(position)]!!.onBindViewHolder(holder, mItems[position])
     }
 
     override fun getItemCount(): Int {
