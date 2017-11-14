@@ -23,7 +23,7 @@ class OverviewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_overview)
 
         // Set up the toolbar.
-        setSupportActionBar(findViewById<View>(R.id.toolbar))
+        setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
         val ab = supportActionBar
         ab!!.setDisplayHomeAsUpEnabled(false)
 
