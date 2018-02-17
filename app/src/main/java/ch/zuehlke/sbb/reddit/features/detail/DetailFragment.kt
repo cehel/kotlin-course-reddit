@@ -33,6 +33,15 @@ class DetailFragment : Fragment(), DetailContract.View {
     private var mPostView: RecyclerView? = null
     private var mNoPostView: View? = null
 
+    private val TAG = "DetailFragment"
+
+    companion object {
+
+        fun newInstance(): DetailFragment {
+            return DetailFragment()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,12 +104,4 @@ class DetailFragment : Fragment(), DetailContract.View {
         srl.post { srl.isRefreshing = isActive }
     }
 
-    companion object {
-
-        private val TAG = "DetailFragment"
-
-        fun newInstance(): DetailFragment {
-            return DetailFragment()
-        }
-    }
-}// Requires empty public constructor
+}

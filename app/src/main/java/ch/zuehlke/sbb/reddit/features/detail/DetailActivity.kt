@@ -15,6 +15,11 @@ import ch.zuehlke.sbb.reddit.util.ActivityUtils
 class DetailActivity : AppCompatActivity() {
 
     private var mOverviewPresenter: DetailPresenter? = null
+    private val TAG = "DetailActivity"
+
+    companion object {
+        val EXTRA_REDDIT_NEWS_URL_KEY = "redditNewsUrl"
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,14 +28,15 @@ class DetailActivity : AppCompatActivity() {
 
         // Set up the toolbar.
         setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
-        val ab = supportActionBar
-        ab!!.setDisplayHomeAsUpEnabled(false)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
 
-        val redditUrl = intent.getStringExtra(EXTRA_REDDIT_NEWS_URL)
+        // Retrieve the data-url from the bundle
+        val redditUrl = intent.getStringExtra(EXTRA_REDDIT_NEWS_URL_KEY)
         Log.i(TAG, "RedditUrl: " + redditUrl)
-        var detailFragment: DetailFragment? = supportFragmentManager.findFragmentById(R.id.contentFrame) as DetailFragment?
+
+        // Create the fragment
+        var detailFragment = supportFragmentManager.findFragmentById(R.id.contentFrame) as DetailFragment?
         if (detailFragment == null) {
-            // Create the fragment
             detailFragment = DetailFragment.newInstance()
             ActivityUtils.addFragmentToActivity(
                     supportFragmentManager, detailFragment, R.id.contentFrame)
@@ -40,9 +46,5 @@ class DetailActivity : AppCompatActivity() {
         mOverviewPresenter = DetailPresenter(detailFragment, Injection.provideRedditNewsRepository(this), redditUrl)
     }
 
-    companion object {
 
-        val EXTRA_REDDIT_NEWS_URL = "redditNewsUrl"
-        private val TAG = "DetailActivity"
-    }
 }

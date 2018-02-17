@@ -14,7 +14,6 @@ import android.view.ViewGroup
 
 import ch.zuehlke.sbb.reddit.R
 import ch.zuehlke.sbb.reddit.features.detail.DetailActivity
-import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditNewsDelegateAdapter
 import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.sbb.reddit.features.overview.adapter.impl.RedditOverviewAdapter
 import ch.zuehlke.sbb.reddit.models.RedditNewsData
@@ -122,7 +121,7 @@ class OverviewFragment : Fragment(), OverviewContract.View {
 
     override fun showRedditNewsDetails(redditNewsUrl: String) {
         val intent = Intent(context, DetailActivity::class.java)
-        intent.putExtra(DetailActivity.EXTRA_REDDIT_NEWS_URL, redditNewsUrl)
+        intent.putExtra(DetailActivity.EXTRA_REDDIT_NEWS_URL_KEY, redditNewsUrl)
         startActivity(intent)
     }
 

@@ -23,8 +23,10 @@ class DetailPresenter(detailView: DetailContract.View, repository: RedditReposit
     init {
         mRepository = checkNotNull(repository, "The repository cannot be null")
         mDetailView = checkNotNull(detailView, "The DetailView cannot be null")
+
         checkNotNull(redditUrl, "The reddit url cannot be null")
         mRedditUrl = checkNotNull(redditUrl, "The reddit url cannot be null")
+
         detailView.setPresenter(this)
     }
 

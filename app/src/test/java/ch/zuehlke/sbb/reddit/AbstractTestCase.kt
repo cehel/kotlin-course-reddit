@@ -8,6 +8,7 @@ import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement
 import ch.zuehlke.sbb.reddit.util.DateUtils
 
 import com.google.common.base.Strings.repeat
+import java.io.Reader
 
 /**
  * Created by chsc on 13.11.17.
@@ -18,7 +19,7 @@ abstract class AbstractTestCase {
     @Throws(IOException::class)
     protected fun readJsonFile(filename: String): String {
 
-        val br = BufferedReader(InputStreamReader(this.javaClass.getClassLoader().getResourceAsStream(filename)))
+        val br = BufferedReader(InputStreamReader(this.javaClass.getClassLoader().getResourceAsStream(filename)) as Reader?)
         val sb = StringBuilder()
         var line: String? = br.readLine()
         while (line != null) {
