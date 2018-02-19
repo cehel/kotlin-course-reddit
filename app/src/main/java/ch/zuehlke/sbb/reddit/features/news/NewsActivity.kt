@@ -24,6 +24,7 @@ class NewsActivity : BaseActivity() {
         val ab = supportActionBar
         ab!!.setDisplayHomeAsUpEnabled(false)
 
+
         mNavigationController!!.showOverview()
     }
 

@@ -16,7 +16,7 @@ import com.google.common.base.Preconditions.checkNotNull
  * Created by chsc on 08.11.17.
  */
 
-class RedditRepository// Prevent direct instantiation.
+class RedditRepository
 private constructor(newsRemoteDataSource: RedditDataSource,
                     newsLocalDataSource: RedditDataSource, private val mContext: Context) : RedditDataSource {
 

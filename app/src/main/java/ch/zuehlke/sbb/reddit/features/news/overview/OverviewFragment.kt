@@ -48,11 +48,12 @@ class OverviewFragment : BaseFragment(), OverviewContract.View {
         mNoNewsView = root.findViewById<View>(R.id.noRedditNewsView)
         mNewsView = root.findViewById<RecyclerView>(R.id.redditNewsView)
         mNewsView!!.layoutManager = LinearLayoutManager(context)
+
+        mOverviewAdapter = RedditOverviewAdapter(listener)
         mNewsView!!.adapter = mOverviewAdapter
         container?.let {
             mNavigationController = NavigationController(this.activity,it.id)
         }
-        mOverviewAdapter = RedditOverviewAdapter(listener)
 
         // Set up progress indicator
         val swipeRefreshLayout = root.findViewById<View>(R.id.refreshLayout) as ScrollChildSwipeRefreshLayout
