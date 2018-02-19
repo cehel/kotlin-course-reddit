@@ -49,7 +49,7 @@ private constructor(context: Context, redditAPI: RedditAPI, gson: Gson, type: Ty
                 for (child in response.body().data!!.children!!) {
                     val data = child.data
                     Log.i(TAG, "child date: " + Date(data!!.created))
-                    data?.let {
+                    data.let {
                         redditNewsDataList.add(RedditNewsData(data.author!!, data.title!!, data.num_comments, data.created, data.thumbnail!!, data.url!!, data.id!!, data.permalink!!))
 
                     }
@@ -90,16 +90,15 @@ private constructor(context: Context, redditAPI: RedditAPI, gson: Gson, type: Ty
         })
     }
 
-    override fun getPosts(callback: RedditDataSource.LoadPostsCallback, title: String) {
-        val call = mRedditAPI.getRedditPosts(title, "new")
+    override fun getPosts(callback: RedditDataSource.LoadPostsCallback, permalink: String) {
+        val call = mRedditAPI.getRedditPosts(permalink, "new")
         call.enqueue(object : Callback<ResponseBody> {
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                var redditPosts: List<RedditPostsData> = ArrayList()
-                val parentId: String? = null
+                var redditPosts: List<RedditPostsData>
                 val elements = parseResponseToPostElements(response.body())
                 order = 0
-                redditPosts = flattenRetrofitResponse(elements, title)
+                redditPosts = flattenRetrofitResponse(elements, permalink)
                 callback.onPostsLoaded(redditPosts)
             }
 

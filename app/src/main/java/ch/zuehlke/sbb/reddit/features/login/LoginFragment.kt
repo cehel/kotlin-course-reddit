@@ -14,11 +14,8 @@ import android.widget.ProgressBar
 
 import com.google.common.base.Strings
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
 import ch.zuehlke.sbb.reddit.R
-import ch.zuehlke.sbb.reddit.features.overview.OverviewActivity
+import ch.zuehlke.sbb.reddit.features.news.NewsActivity
 
 import com.google.common.base.Preconditions.checkNotNull
 
@@ -112,7 +109,7 @@ class LoginFragment : Fragment(), LoginContract.View {
 
 
     override fun showRedditNews() {
-        val intent = Intent(context, OverviewActivity::class.java)
+        val intent = Intent(context, NewsActivity::class.java)
         startActivity(intent)
         activity.finish()
     }
