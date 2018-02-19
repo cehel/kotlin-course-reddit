@@ -22,7 +22,7 @@ object ActivityUtils {
         checkNotNull(fragmentManager)
         checkNotNull(fragment)
         val transaction = fragmentManager.beginTransaction()
-        transaction.add(frameId, fragment).addToBackStack( null )
+        transaction.add(frameId, fragment)
         transaction.commit()
     }
 
@@ -31,10 +31,8 @@ object ActivityUtils {
         checkNotNull(fragmentManager)
         checkNotNull(fragment)
         val transaction = fragmentManager.beginTransaction()
-        transaction.replace(frameId, fragment)
+        transaction.replace(frameId, fragment).addToBackStack( null )
         transaction.commit()
-
-
     }
 
 
