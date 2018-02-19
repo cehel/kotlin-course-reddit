@@ -81,8 +81,8 @@ private constructor(newsRemoteDataSource: RedditDataSource,
         if (!isNetworkAvailable) {
             // Query the local storage if available. If not, query the network.
             mRedditNewsLocalDataSource.getNews(object : RedditDataSource.LoadNewsCallback {
-                override fun onNewsLoaded(tasks: List<RedditNewsData>) {
-                    refreshCache(tasks)
+                override fun onNewsLoaded(news: List<RedditNewsData>) {
+                    refreshCache(news)
                     callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
                 }
 
@@ -95,11 +95,11 @@ private constructor(newsRemoteDataSource: RedditDataSource,
             if (mCacheIsDirty) {
                 // If the cache is dirty we need to fetch new data from the network. The Cache is only dirty, when a refreshNews is going on
                 getNewsFromRemoteDataSource(object : RedditDataSource.LoadNewsCallback {
-                    override fun onNewsLoaded(data: List<RedditNewsData>) {
-                        for (newsData in data) {
+                    override fun onNewsLoaded(news: List<RedditNewsData>) {
+                        for (newsData in news) {
                             saveRedditNews(newsData)
                         }
-                        refreshCache(data)
+                        refreshCache(news)
                         callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
                     }
 
@@ -110,8 +110,8 @@ private constructor(newsRemoteDataSource: RedditDataSource,
             } else {
                 // Query the local storage if available. If not, query the network.
                 mRedditNewsLocalDataSource.getNews(object : RedditDataSource.LoadNewsCallback {
-                    override fun onNewsLoaded(tasks: List<RedditNewsData>) {
-                        refreshCache(tasks)
+                    override fun onNewsLoaded(news: List<RedditNewsData>) {
+                        refreshCache(news)
                         callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
                     }
 

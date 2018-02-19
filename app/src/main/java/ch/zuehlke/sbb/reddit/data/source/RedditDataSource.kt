@@ -11,7 +11,7 @@ interface RedditDataSource {
 
     interface LoadNewsCallback {
 
-        fun onNewsLoaded(data: List<RedditNewsData>)
+        fun onNewsLoaded(news: List<RedditNewsData>)
 
         fun onDataNotAvailable()
     }
@@ -28,7 +28,7 @@ interface RedditDataSource {
 
     fun getNews(callback: LoadNewsCallback)
 
-    fun getPosts(callback: LoadPostsCallback, title: String)
+    fun getPosts(callback: LoadPostsCallback, permalink: String)
 
     fun savePosts(data: RedditPostsData)
 
