@@ -15,17 +15,17 @@ class NewsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_overview)
+        setContentView(R.layout.activity_news)
 
         mNavigationController = NavigationController(this, R.id.contentFrame)
 
         // Set up the toolbar.
         setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
         val ab = supportActionBar
-        ab!!.setDisplayHomeAsUpEnabled(false)
+        ab?.setDisplayHomeAsUpEnabled(false)
 
 
-        mNavigationController!!.showOverview()
+        mNavigationController?.showOverview()
     }
 
 
