@@ -3,6 +3,7 @@ package ch.zuehlke.sbb.reddit
 
 import android.content.Context
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository
+import ch.zuehlke.sbb.reddit.data.source.RemoteDataMapper
 import ch.zuehlke.sbb.reddit.data.source.local.RedditNewsLocalDataSource
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.Companion.elementTypeAdapterFactory
@@ -21,7 +22,7 @@ import java.lang.reflect.Modifier
  */
 object Injection {
 
-    private val REDDIT_END_POINT = "https://www.reddit.com/r/dota2/"
+    private val REDDIT_END_POINT = "https://www.reddit.com/r/kotlin/"
 
     private var redditAPI: RedditAPI? = null
     private var retrofit: Retrofit? = null
@@ -30,13 +31,16 @@ object Injection {
 
     }.type
 
+
     val gson = GsonBuilder()
             .registerTypeAdapterFactory(elementTypeAdapterFactory)
             .create()
 
+    val remoteDataMapper = RemoteDataMapper.getInstance(gson, type)
+
     fun provideRedditNewsRepository(context: Context): RedditRepository {
         checkNotNull(context)
-        return RedditRepository.getInstance(RedditNewsDataRemoteDataSource.getInstance(context, getRedditAPI(retroFit), gson, type),
+        return RedditRepository.getInstance(RedditNewsDataRemoteDataSource.getInstance(context, getRedditAPI(retroFit), remoteDataMapper),
                 RedditNewsLocalDataSource.getInstance(context), context)
     }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.annotation.NonNull
 import ch.zuehlke.sbb.reddit.data.FakeRedditNewsRemoteDataSource
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository
+import ch.zuehlke.sbb.reddit.data.source.RemoteDataMapper
 import ch.zuehlke.sbb.reddit.data.source.local.RedditNewsLocalDataSource
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.Companion.elementTypeAdapterFactory
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement
@@ -22,13 +23,16 @@ object Injection {
             .create()
 
 
-    fun provideRedditNewsRepository(@NonNull context: Context): RedditRepository {
-        checkNotNull(context)
-        return RedditRepository.getInstance(FakeRedditNewsRemoteDataSource.getInstance(),
-                RedditNewsLocalDataSource.getInstance(context), context)
-    }
-
     val type = object : TypeToken<List<RedditPostElement>>() {
 
     }.type
+
+    val remoteDataMapper = RemoteDataMapper.getInstance(gson, type)
+
+    fun provideRedditNewsRepository(@NonNull context: Context): RedditRepository {
+        checkNotNull(context)
+        return RedditRepository.getInstance(FakeRedditNewsRemoteDataSource.getInstance(context, remoteDataMapper),
+                RedditNewsLocalDataSource.getInstance(context), context)
+    }
+
 }
