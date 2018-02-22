@@ -12,9 +12,12 @@ import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement
 import com.google.common.base.Preconditions.checkNotNull
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Modifier
+
 
 /**
  * Enables injection of production implementations for
@@ -60,8 +63,14 @@ object Injection {
                         .registerTypeAdapterFactory(elementTypeAdapterFactory)
                         .create()
 
+                val interceptor = HttpLoggingInterceptor()
+                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+                val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
+
                 retrofit = Retrofit.Builder()
                         .baseUrl(REDDIT_END_POINT)
+                        .client(client)
                         .addConverterFactory(GsonConverterFactory.create(gson))
                         .build()
             }

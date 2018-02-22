@@ -107,12 +107,9 @@ private constructor(context: Context, redditAPI: RedditAPI, dataMapper: RemoteDa
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 Log.i(TAG,"Got Posts from Remote!!")
-                Log.i(TAG,"posts:"+response.body().string())
-                var redditPosts: List<RedditPostsData>
                 val elements = mDataMapper.parseResponseToPostElements(response.body())
-
                 order = 0
-                redditPosts = mDataMapper.flattenRetrofitResponse(elements, permalink)
+                val redditPosts = mDataMapper.flattenRetrofitResponse(elements, permalink)
                 callback.onPostsLoaded(redditPosts)
             }
 
