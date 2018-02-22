@@ -34,6 +34,7 @@ ext{
     rx_kotlin = '2.1.0'
     kodein_version = '4.1.0'
     room_version = '1.0.0'
+    dagger_version = '2.11'
 }
 
 task clean(type: Delete) {
