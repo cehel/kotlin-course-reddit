@@ -15,7 +15,6 @@ import ch.zuehlke.sbb.reddit.features.BaseFragment
 import ch.zuehlke.sbb.reddit.features.news.NavigationController
 import ch.zuehlke.sbb.reddit.features.news.NewsViewModel
 import ch.zuehlke.sbb.reddit.features.news.NewsViewModelFactory
-import ch.zuehlke.sbb.reddit.features.news.detail.DetailAdapter
 import ch.zuehlke.sbb.reddit.features.news.detail.DetailFragment
 import ch.zuehlke.sbb.reddit.features.news.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.sbb.reddit.features.news.overview.adapter.impl.RedditOverviewAdapter
@@ -123,10 +122,6 @@ class OverviewFragment : BaseFragment() {
         }
     }
 
-
-    fun showRedditNewsDetails(redditNewsUrl: String) {
-
-    }
 
     companion object {
 
