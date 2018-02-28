@@ -78,25 +78,9 @@ class NewsViewModel(private val redditRepository: RedditRepository): ViewModel()
     }
 
 
-    fun loadRedditPosts() {
-        mutableViewState.postValue(ViewState.LOADING)
-
-        redditRepository.getPosts(object : RedditDataSource.LoadPostsCallback {
-            override fun onPostsLoaded(posts: List<RedditPostsData>) {
-                mutableViewState.postValue(ViewState.NONE)
-                mutableRedditPostData.postValue(posts.toMutableList())
-            }
-
-            override fun onDataNotAvailable() {
-               mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
-            }
-        }, currentPostUrl!!)
-    }
-
-    fun setRedditUrl(redditUrl: String){
+    fun setSelectedRedditUrl(redditUrl: String){
         this.currentPostUrl = redditUrl
     }
-
 
 
 }

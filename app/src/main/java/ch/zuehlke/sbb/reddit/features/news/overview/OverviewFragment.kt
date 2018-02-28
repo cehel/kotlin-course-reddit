@@ -15,7 +15,7 @@ import ch.zuehlke.sbb.reddit.features.BaseFragment
 import ch.zuehlke.sbb.reddit.features.news.NavigationController
 import ch.zuehlke.sbb.reddit.features.news.NewsViewModel
 import ch.zuehlke.sbb.reddit.features.news.NewsViewModelFactory
-import ch.zuehlke.sbb.reddit.features.news.detail.DetailFragment
+
 import ch.zuehlke.sbb.reddit.features.news.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.sbb.reddit.features.news.overview.adapter.impl.RedditOverviewAdapter
 import ch.zuehlke.sbb.reddit.models.RedditNewsData
@@ -38,8 +38,9 @@ class OverviewFragment : BaseFragment() {
             val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
             val newsViewModel = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)
 
-            newsViewModel.setRedditUrl(url)
-            mNavigationController?.navigateToFragment(DetailFragment::class.java)
+            newsViewModel.setSelectedRedditUrl(url)
+
+            //TODO: Navigate to a detailed view
 
         }
     }
