@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ch.zuehlke.sbb.reddit">
+    package="ch.zuehlke.reddit">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ch.zuehlke.sbb.reddit.features.news.NewsActivity"></activity>
+        <activity android:name="ch.zuehlke.reddit.features.news.NewsActivity"></activity>
 
     </application>
 
