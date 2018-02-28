@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.zuehlke.sbb.reddit.BaseFragment
 import ch.zuehlke.sbb.reddit.Injection
 import ch.zuehlke.sbb.reddit.R
 import ch.zuehlke.sbb.reddit.features.news.NewsActivity
@@ -20,29 +21,17 @@ import kotlinx.android.synthetic.main.fragment_login.*
  * Created by chsc on 08.11.17.
  */
 
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
 
     companion object {
-
         fun newInstance(): LoginFragment = LoginFragment()
-
-        private const val BUNDLE_KEY_USERNAME = "bundle_username"
     }
+
+    private var enteredUserName: String? by savedInstanceState()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.fragment_login, container, false)
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putString(BUNDLE_KEY_USERNAME, username.text.toString())
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
-            username.setText(savedInstanceState.getString(BUNDLE_KEY_USERNAME, ""))
-        }
-        super.onViewStateRestored(savedInstanceState)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -50,6 +39,8 @@ class LoginFragment : Fragment() {
         val loginViewModel = ViewModelProviders.of(activity, loginViewModelFactory).get(LoginViewModel::class.java)
         loginViewModel.viewState.observe(this, Observer { viewState: LoginViewModel.ViewState? -> handleViewState(viewState) })
         loginButton.setOnClickListener { loginViewModel.login(username.text.toString(), password.text.toString()) }
+        username.setText(enteredUserName)
+
         val (userName, userPassword) = loginViewModel.getLoginData()
         username.setText(userName)
         password.setText(userPassword)
