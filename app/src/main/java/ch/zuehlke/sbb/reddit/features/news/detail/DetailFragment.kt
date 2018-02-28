@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -11,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import ch.zuehlke.sbb.reddit.Injection
 import ch.zuehlke.sbb.reddit.R
-import ch.zuehlke.sbb.reddit.features.BaseFragment
 import ch.zuehlke.sbb.reddit.features.news.NewsViewModel
 import ch.zuehlke.sbb.reddit.features.news.NewsViewModelFactory
 import ch.zuehlke.sbb.reddit.models.RedditPostsData
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_detail.*
  * Created by chsc on 13.11.17.
  */
 
-class DetailFragment: BaseFragment() {
+class DetailFragment: Fragment() {
 
 
     private var mAdapter: DetailAdapter? = null
