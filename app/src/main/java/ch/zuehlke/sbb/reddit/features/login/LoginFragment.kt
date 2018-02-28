@@ -21,18 +21,26 @@ import kotlinx.android.synthetic.main.fragment_login.*
 
 class LoginFragment : Fragment() {
 
-
     companion object {
-        fun newInstance(): LoginFragment {
-            return LoginFragment()
-        }
+
+        fun newInstance(): LoginFragment = LoginFragment()
+
+        private const val BUNDLE_KEY_USERNAME = "bundle_username"
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater!!.inflate(R.layout.fragment_login, container, false)
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater!!.inflate(R.layout.fragment_login, container, false)
 
-        return root
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putString(BUNDLE_KEY_USERNAME,username.text.toString())
+        super.onSaveInstanceState(outState)
+    }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        savedInstanceState?.let {
+            username.setText(savedInstanceState.getString(BUNDLE_KEY_USERNAME,""))
+        }
+        super.onViewStateRestored(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -40,7 +48,9 @@ class LoginFragment : Fragment() {
         val loginViewModel = ViewModelProviders.of(activity).get(LoginViewModel::class.java)
         loginViewModel.viewState.observe(this, Observer { viewState: LoginViewModel.ViewState? -> handleViewState(viewState) })
         loginButton.setOnClickListener{loginViewModel.login(username.text.toString(), password.text.toString())}
-        username.addTextChangedListener(object : TextWatcher {
+
+
+            username.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 // Do nothing
             }
