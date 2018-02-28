@@ -1,128 +1,127 @@
 package ch.zuehlke.sbb.reddit.features.news.overview
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.zuehlke.sbb.reddit.Injection
 import ch.zuehlke.sbb.reddit.R
 import ch.zuehlke.sbb.reddit.features.BaseFragment
 import ch.zuehlke.sbb.reddit.features.news.NavigationController
+import ch.zuehlke.sbb.reddit.features.news.NewsViewModel
+import ch.zuehlke.sbb.reddit.features.news.NewsViewModelFactory
+import ch.zuehlke.sbb.reddit.features.news.detail.DetailFragment
 import ch.zuehlke.sbb.reddit.features.news.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.sbb.reddit.features.news.overview.adapter.impl.RedditOverviewAdapter
 import ch.zuehlke.sbb.reddit.models.RedditNewsData
-import com.google.common.base.Preconditions
+import kotlinx.android.synthetic.main.fragment_overview.*
 
 /**
  * Created by chsc on 11.11.17.
  */
 
-class OverviewFragment : BaseFragment(), OverviewContract.View {
+class OverviewFragment : BaseFragment() {
 
     //Injections
-    private var mOverviewPresenter: OverviewContract.Presenter? = null
+
     private var mOverviewAdapter: RedditOverviewAdapter? = null
     private var mNavigationController: NavigationController? = null
-
-    private var mNoNewsView: View? = null
-    private var mNewsView: RecyclerView? = null
 
 
     private val listener = object: OnNewsSelectedListener {
         override fun onNewsSelected(url: String) {
-            showRedditNewsDetails(url)
+            val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
+            val newsViewModel = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)
+
+            newsViewModel.setRedditUrl(url)
+            mNavigationController?.navigateToFragment(DetailFragment::class.java)
+
         }
     }
 
-    override fun setPresenter(presenter: OverviewContract.Presenter) {
-        mOverviewPresenter = Preconditions.checkNotNull(presenter)
-    }
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater!!.inflate(R.layout.fragment_overview, container, false)
-        mNoNewsView = root.findViewById<View>(R.id.noRedditNewsView)
-        mNewsView = root.findViewById<RecyclerView>(R.id.redditNewsView)
-        mNewsView!!.layoutManager = LinearLayoutManager(context)
 
-        mOverviewAdapter = RedditOverviewAdapter(listener)
-        mNewsView!!.adapter = mOverviewAdapter
         container?.let {
             mNavigationController = NavigationController(this.activity,it.id)
         }
 
-        // Set up progress indicator
-        val swipeRefreshLayout = root.findViewById<View>(R.id.refreshLayout) as ScrollChildSwipeRefreshLayout
-        swipeRefreshLayout.setColorSchemeColors(
-                ContextCompat.getColor(activity, R.color.colorPrimary),
-                ContextCompat.getColor(activity, R.color.colorAccent),
-                ContextCompat.getColor(activity, R.color.colorPrimaryDark)
-        )
-
-        val infiniteScrollListener = object : InfiniteScrollListener(mNewsView!!.layoutManager as LinearLayoutManager) {
-            override fun loadingFunction() {
-                mOverviewPresenter?.loadMoreRedditNews()
-            }
-        }
-        swipeRefreshLayout.setScrollUpChild(mNewsView!!)
-        swipeRefreshLayout.setOnRefreshListener {
-            infiniteScrollListener.reset()
-            mOverviewPresenter?.loadRedditNews(false)
-        }
-
-
-        mNewsView!!.setHasFixedSize(true)
-        mNewsView!!.clearOnScrollListeners()
-        mNewsView!!.addOnScrollListener(infiniteScrollListener)
-
         return root
     }
 
-    override fun onResume() {
-        super.onResume()
-        mOverviewPresenter!!.start()
-    }
 
 
-    override val isActive: Boolean
-        get() = isAdded
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
+        val newsViewModel = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)
 
-    override fun setLoadingIndicator(isActive: Boolean) {
-        if (view == null) {
-            return
+        newsViewModel.viewState.observe(this, Observer { viewState: NewsViewModel.ViewState? -> handleViewState(viewState)  })
+        newsViewModel.redditNewsData.observe( this, Observer { newsData: List<RedditNewsData>? -> newsData?.let {  mOverviewAdapter?.clearAndAddNews(it) }})
+
+        newsViewModel.moreRedditNewsData.observe(this, Observer {
+            redditNews: List<RedditNewsData>? -> redditNews?.let {  mOverviewAdapter?.addRedditNews(it)}
+        })
+
+        mOverviewAdapter = RedditOverviewAdapter(listener)
+
+        redditNewsView.apply{
+            layoutManager = LinearLayoutManager(context)
+            adapter = mOverviewAdapter
+            setHasFixedSize(true)
+            clearOnScrollListeners()
         }
-        val srl = view!!.findViewById<SwipeRefreshLayout>(R.id.refreshLayout)
-        // Make sure setRefreshing() is called after the layout is done with everything else.
-        srl.post { srl.isRefreshing = isActive }
+
+        val infiniteScrollListener = object : InfiniteScrollListener(redditNewsView.layoutManager as LinearLayoutManager) {
+            override fun loadingFunction() {
+                newsViewModel.loadMoreRedditNews()
+            }
+        }
+
+        // Set up progress indicator
+        refreshLayout.apply {
+            setColorSchemeColors(
+                    ContextCompat.getColor(activity, R.color.colorPrimary),
+                    ContextCompat.getColor(activity, R.color.colorAccent),
+                    ContextCompat.getColor(activity, R.color.colorPrimaryDark))
+            setScrollUpChild(redditNewsView)
+            setOnRefreshListener {
+                infiniteScrollListener.reset()
+                newsViewModel.loadRedditNews(true, true)
+            }
+        }
+
+        redditNewsView.addOnScrollListener(infiniteScrollListener)
+
     }
 
-    override fun showRedditNews(redditNews: List<RedditNewsData>) {
-        mOverviewAdapter!!.clearAndAddNews(redditNews)
-        mNewsView!!.visibility = View.VISIBLE
-        mNoNewsView!!.visibility = View.GONE
+    private fun handleViewState(viewState: NewsViewModel.ViewState?){
+        when(viewState){
+            NewsViewModel.ViewState.LOADING -> refreshLayout.isRefreshing = true
+            NewsViewModel.ViewState.NONE -> {
+                refreshLayout.isRefreshing = false
+                redditNewsView.visibility = View.VISIBLE
+                noRedditNewsView.visibility = View.GONE
+            }
+            NewsViewModel.ViewState.ERROR -> {
+                refreshLayout.isRefreshing = false
+                Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_news, Snackbar.LENGTH_LONG)
+            }
+            NewsViewModel.ViewState.NO_DATA_AVAILABLE -> {
+                refreshLayout.isRefreshing = false
+                redditNewsView.visibility = View.GONE
+                noRedditNewsView.visibility = View.VISIBLE
+            }
+        }
     }
 
-    override fun addRedditNews(redditNews: List<RedditNewsData>) {
-        mOverviewAdapter!!.addRedditNews(redditNews)
-    }
-
-    override fun showRedditNewsLoadingError() {
-        Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_news, Snackbar.LENGTH_LONG)
-    }
-
-
-    override fun showNoNews() {
-        mNewsView!!.visibility = View.GONE
-        mNoNewsView!!.visibility = View.VISIBLE
-    }
-
-    override fun showRedditNewsDetails(redditNewsUrl: String) {
-        mNavigationController?.showDetails(redditNewsUrl)
-    }
 
     companion object {
 
