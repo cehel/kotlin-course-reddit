@@ -60,7 +60,7 @@ class LoginFragment : Fragment() {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                if (editable.isNotEmpty() && loginViewModel.verifyIsEmail(editable.toString())) {
+                if (editable.isNotEmpty() && loginViewModel.isEmailValid(editable.toString())) {
                     usernameLayout.error = null
                 } else {
                     usernameLayout.error = getString(R.string.login_screen_invalid_email)
@@ -91,8 +91,8 @@ class LoginFragment : Fragment() {
         when(viewState){
             LoginViewModel.ViewState.LOADING -> progressBar.visibility = View.VISIBLE
             LoginViewModel.ViewState.NONE -> progressBar.visibility = View.GONE
-            LoginViewModel.ViewState.INVALID_PASSWORD -> usernameLayout.error = getString(R.string.login_screen_invalid_username)
-            LoginViewModel.ViewState.INVALID_USERNAME -> passwordLayout.error = getString(R.string.login_screen_invalid_password)
+            LoginViewModel.ViewState.INVALID_PASSWORD -> passwordLayout.error = getString(R.string.login_screen_invalid_password)
+            LoginViewModel.ViewState.INVALID_USERNAME -> usernameLayout.error = getString(R.string.login_screen_invalid_username)
             LoginViewModel.ViewState.INVALID_CREDENTIALS -> {
                 usernameLayout.error = getString(R.string.login_screen_invalid_username)
                 passwordLayout.error = getString(R.string.login_screen_invalid_password)

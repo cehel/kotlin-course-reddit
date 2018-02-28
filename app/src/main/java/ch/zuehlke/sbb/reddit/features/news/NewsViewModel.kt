@@ -7,6 +7,7 @@ import ch.zuehlke.sbb.reddit.data.source.RedditDataSource
 import ch.zuehlke.sbb.reddit.data.source.RedditRepository
 import ch.zuehlke.sbb.reddit.models.RedditNewsData
 import ch.zuehlke.sbb.reddit.models.RedditPostsData
+import kotlinx.coroutines.experimental.async
 
 /**
  * Created by celineheldner on 28.02.18.
@@ -38,59 +39,68 @@ class NewsViewModel(private val redditRepository: RedditRepository): ViewModel()
 
 
      fun loadMoreRedditNews() {
-        redditRepository.getMoreNews(object : RedditDataSource.LoadNewsCallback {
-            override fun onNewsLoaded(news: List<RedditNewsData>) {
-                mutableMoreRedditNewsData.postValue(news.toMutableList())
-            }
+        async {
+            redditRepository.getMoreNews(object : RedditDataSource.LoadNewsCallback {
+                override fun onNewsLoaded(news: List<RedditNewsData>) {
+                    mutableMoreRedditNewsData.postValue(news.toMutableList())
+                }
 
-            override fun onDataNotAvailable() {
-                mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
-            }
-        })
+                override fun onDataNotAvailable() {
+                    mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
+                }
+            })
+        }
+
 
     }
 
 
      fun loadRedditNews(forceUpdate: Boolean, showLoadingUI: Boolean) {
-        if (showLoadingUI) {
-            mutableViewState.postValue(ViewState.LOADING)
-        }
-        if (forceUpdate) {
-            redditRepository.refreshNews()
-        }
+         async {
+             if (showLoadingUI) {
+                 mutableViewState.postValue(ViewState.LOADING)
+             }
+             if (forceUpdate) {
+                 redditRepository.refreshNews()
+             }
 
-        redditRepository.getNews(object : RedditDataSource.LoadNewsCallback {
-            override fun onNewsLoaded(news: List<RedditNewsData>) {
-                if (showLoadingUI) {
-                    mutableViewState.postValue(ViewState.NONE)
-                }
-                if (news.isEmpty()){
-                    mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
-                } else {
-                    mutableRedditNewsData.postValue(news.toMutableList())
-                }
-            }
+             redditRepository.getNews(object : RedditDataSource.LoadNewsCallback {
+                 override fun onNewsLoaded(news: List<RedditNewsData>) {
+                     if (showLoadingUI) {
+                         mutableViewState.postValue(ViewState.NONE)
+                     }
+                     if (news.isEmpty()){
+                         mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
+                     } else {
+                         mutableRedditNewsData.postValue(news.toMutableList())
+                     }
+                 }
 
-            override fun onDataNotAvailable() {
-                mutableViewState.postValue(ViewState.ERROR)
-            }
-        })
+                 override fun onDataNotAvailable() {
+                     mutableViewState.postValue(ViewState.ERROR)
+                 }
+             })
+         }
+
     }
 
 
     fun loadRedditPosts() {
-        mutableViewState.postValue(ViewState.LOADING)
+        async {
+            mutableViewState.postValue(ViewState.LOADING)
 
-        redditRepository.getPosts(object : RedditDataSource.LoadPostsCallback {
-            override fun onPostsLoaded(posts: List<RedditPostsData>) {
-                mutableViewState.postValue(ViewState.NONE)
-                mutableRedditPostData.postValue(posts.toMutableList())
-            }
+            redditRepository.getPosts(object : RedditDataSource.LoadPostsCallback {
+                override fun onPostsLoaded(posts: List<RedditPostsData>) {
+                    mutableViewState.postValue(ViewState.NONE)
+                    mutableRedditPostData.postValue(posts.toMutableList())
+                }
 
-            override fun onDataNotAvailable() {
-               mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
-            }
-        }, currentPostUrl!!)
+                override fun onDataNotAvailable() {
+                    mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
+                }
+            }, currentPostUrl!!)
+        }
+
     }
 
     fun setRedditUrl(redditUrl: String){
