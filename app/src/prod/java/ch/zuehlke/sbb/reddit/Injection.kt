@@ -9,6 +9,7 @@ import ch.zuehlke.sbb.reddit.data.source.remote.RedditAPI
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditElementTypeAdapterFactory.Companion.elementTypeAdapterFactory
 import ch.zuehlke.sbb.reddit.data.source.remote.RedditNewsDataRemoteDataSource
 import ch.zuehlke.sbb.reddit.data.source.remote.model.posts.RedditPostElement
+import ch.zuehlke.sbb.reddit.features.login.PreferencesHolder
 import com.google.common.base.Preconditions.checkNotNull
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -24,6 +25,8 @@ import java.lang.reflect.Modifier
  * [ch.zuehlke.sbb.reddit.data.source.RedditDataSource] at compile time.
  */
 object Injection {
+
+    private val PREFERENCES_NAME = "redditApp"
 
     private val REDDIT_END_POINT = "https://www.reddit.com/r/kotlin/"
 
@@ -46,6 +49,9 @@ object Injection {
         return RedditRepository.getInstance(RedditNewsDataRemoteDataSource.getInstance(context, getRedditAPI(retroFit), remoteDataMapper),
                 RedditNewsLocalDataSource.getInstance(context), context)
     }
+
+    fun provideSharedPreferencesHolder(context: Context): PreferencesHolder =
+            PreferencesHolder(context.getSharedPreferences(PREFERENCES_NAME,Context.MODE_PRIVATE))
 
     fun getRedditAPI(retrofit: Retrofit): RedditAPI {
         if (redditAPI == null) {

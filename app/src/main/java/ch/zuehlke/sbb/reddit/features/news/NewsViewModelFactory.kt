@@ -16,7 +16,7 @@ class NewsViewModelFactory(private val redditRepository: RedditRepository): View
         if(modelClass.isAssignableFrom(NewsViewModel::class.java)){
             return NewsViewModel(redditRepository) as T
         }
-        throw IllegalArgumentException()
+        throw IllegalArgumentException("Unkown Viewmodel class $modelClass cannot initiate it.")
     }
 
 

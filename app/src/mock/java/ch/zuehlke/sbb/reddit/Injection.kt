@@ -35,4 +35,8 @@ object Injection {
                 RedditNewsLocalDataSource.getInstance(context), context)
     }
 
+    fun provideSharedPreferencesHolder(context: Context): PreferencesHolder =
+            PreferencesHolder(context.getSharedPreferences(PREFERENCES_NAME,Context.MODE_PRIVATE))
+
+
 }
