@@ -6,7 +6,7 @@ import ch.zuehlke.sbb.reddit.features.news.overview.adapter.ViewType
 /**
  * Created by chsc on 08.11.17.
  */
-
+//TODO: convert to data class
 class RedditNewsData : ViewType {
 
     var author: String? = null

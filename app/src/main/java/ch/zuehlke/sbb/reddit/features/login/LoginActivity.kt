@@ -14,8 +14,6 @@ import ch.zuehlke.sbb.reddit.util.ActivityUtils
 
 class LoginActivity : AppCompatActivity() {
 
-    private var mLoginPresenter: LoginPresenter? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +27,5 @@ class LoginActivity : AppCompatActivity() {
             ActivityUtils.addFragmentToActivity(
                     supportFragmentManager, loginFragment!!, R.id.contentFrame)
         }
-
-        // Create the presenter
-        mLoginPresenter = LoginPresenter(loginFragment)
     }
 }
