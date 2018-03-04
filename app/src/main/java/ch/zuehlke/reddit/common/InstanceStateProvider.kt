@@ -7,55 +7,25 @@ import kotlin.reflect.KProperty
 
 /**
  * Created by chsc on 28.02.18.
+ *
+ * chapter_02_section_01_property_delegates_exercise
  */
 
 open class InstanceStateProvider<T> private constructor(private var bundle: Bundle) {
 
-    private var cache: T? = null
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-        cache = value
-        if (value == null) {
-            bundle.remove(property.name)
-        } else {
-            when (value) {
-                is Int -> {
-                    bundle.putInt(property.name, value)
-                }
-                is Long -> {
-                    bundle.putLong(property.name, value)
-                }
-                is Float -> {
-                    bundle.putFloat(property.name, value)
-                }
-                is Double -> {
-                    bundle.putDouble(property.name, value)
-                }
-                is String -> {
-                    bundle.putString(property.name, value)
-                }
-                is Parcelable -> {
-                    bundle.putParcelable(property.name, value)
-                }
-                is Serializable -> {
-                    bundle.putSerializable(property.name, value)
-                }
-                is Bundle -> {
-                    bundle.putBundle(property.name, value)
-                }
-                else -> throw IllegalArgumentException("Unkown property type for property ${property.name}")
-            }
-        }
+        //TODO("Implement the persistence logic to save different kind of objects (Int, Double, Long, Serializable,...)")
     }
 
-    protected fun getAndsetCache(key: String): T? =
-            cache?: (bundle.get(key) as T?).apply { cache = this }
 
-    class Nullable<T>(bundle: Bundle): InstanceStateProvider<T>(bundle){
-        operator fun getValue(thisRef: Any?,property: KProperty<*>): T? = getAndsetCache(property.name)
-    }
+    /*
+      TODO("Provide a delegate which can return a nullable value, read from the provided bundle")
+      For example: Nullabel(bundle: Bundle): InstanceProvider<T>(bundle)
+     */
 
-    class NonNullable<T>(bundle: Bundle,private val defaultValue: T): InstanceStateProvider<T>(bundle){
-        operator fun getValue(thisRef: Any?,property: KProperty<*>): T? = getAndsetCache(property.name)?: defaultValue
-    }
+
+    /*
+      TODO("Provide a second delegate which also reads the value from the provided bundle, but doesn't allow nullable types.)
+     */
 }

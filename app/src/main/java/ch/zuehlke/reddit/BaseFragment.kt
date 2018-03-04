@@ -15,8 +15,10 @@ open class BaseFragment: Fragment(){
 
     private val bundle = Bundle()
 
-    protected fun <T> savedInstanceState() = InstanceStateProvider.Nullable<T>(bundle)
-    protected fun <T> savedInstanceState(defaultValue: T) = InstanceStateProvider.NonNullable<T>(bundle,defaultValue)
+    /*
+     chapter_02_section_01_property_delegates_exercise
+     TODO Instantiate the property delegate(s) with the bundle above so that all properties are persisted in the same bundle.
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
