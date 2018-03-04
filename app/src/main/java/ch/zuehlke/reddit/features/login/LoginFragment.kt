@@ -40,6 +40,10 @@ class LoginFragment : BaseFragment() {
         loginButton.setOnClickListener { loginViewModel.login(username.text.toString(), password.text.toString()) }
         username.setText(enteredUserName)
 
+        /*
+        chapter_02_section_03_sealed_classes
+        TODO(The data should be taken directly from the [PreferencesHolder] )
+         */
         val (userName, userPassword) = loginViewModel.getLoginData()
         username.setText(userName)
         password.setText(userPassword)
@@ -83,6 +87,10 @@ class LoginFragment : BaseFragment() {
 
     }
 
+     /*
+       chapter_02_section_03_sealed_classes
+       Refactor this method so it deals with the sealed class implemention
+     */
     fun handleViewState(viewState: LoginViewModel.ViewState?) {
         when (viewState) {
             LoginViewModel.ViewState.LOADING -> progressBar.visibility = View.VISIBLE

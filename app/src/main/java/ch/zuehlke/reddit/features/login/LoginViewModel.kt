@@ -9,6 +9,8 @@ import java.util.regex.Pattern
 
 /**
  * Created by celineheldner on 28.02.18.
+ * chapter_02_section_03_sealed_classes
+ * TODO(Delete the enum [ViewState] and replace it by a implementation which is based on a Sealed class. The goal should be a [LoginViewModel] which is independent form the SharedPreferencesHolder)
  */
 class LoginViewModel(private val preferencesHolder: PreferencesHolder): ViewModel(){
 
@@ -28,6 +30,10 @@ class LoginViewModel(private val preferencesHolder: PreferencesHolder): ViewMode
                     + "[0-9]{1,2}|25[0-5]|2[0-4][0-9]))|"
                     + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$")
 
+    /*
+    chapter_02_section_03_sealed_classes
+    TODO(Delete this enum)
+     */
     enum class ViewState{
         LOADING,NONE,INVALID_PASSWORD,INVALID_USERNAME,INVALID_CREDENTIALS,LOGGED_IN
     }
@@ -46,6 +52,10 @@ class LoginViewModel(private val preferencesHolder: PreferencesHolder): ViewMode
         }
     }
 
+    /*
+     chapter_02_section_03_sealed_classes
+     TODO(This should not be needed anymore)
+      */
     fun getLoginData(): Pair<String,String> {
         val username = preferencesHolder.getString(KEY_USERNAME,"")
         val password = preferencesHolder.getString(KEY_PASSWORD,"")
