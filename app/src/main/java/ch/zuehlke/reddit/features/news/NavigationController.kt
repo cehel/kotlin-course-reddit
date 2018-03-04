@@ -16,9 +16,9 @@ class NavigationController<out T> constructor(private val activity: T, private v
         if (overviewFragment == null) {
             // Create the fragment
             overviewFragment = OverviewFragment.newInstance()
-        }
-        activity.apply {
-            addFragment(overviewFragment!!, fragmentContainerId)
+            activity.apply {
+                addFragment(overviewFragment!!, fragmentContainerId)
+            }
         }
     }
 
