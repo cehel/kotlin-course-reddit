@@ -4,6 +4,10 @@ import java.util.Date
 
 /**
  * Created by chsc on 11.11.17.
+ *
+ * chapter_02_section_05_extension_exercise
+ *
+ * TODO(Remove this class and put the logic inside a extension of the correct receiver)
  */
 
 object DateUtils {

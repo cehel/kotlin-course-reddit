@@ -7,6 +7,10 @@ import com.google.common.base.Preconditions.checkNotNull
 
 /**
  * Created by chsc on 08.11.17.
+ *
+ * chapter_02_section_05_extension_exercise
+ *
+ * TODO(This class should be removed and the logic should be placed inside a (dispatching)extension for the correct receiver )
  */
 
 object ActivityUtils {
