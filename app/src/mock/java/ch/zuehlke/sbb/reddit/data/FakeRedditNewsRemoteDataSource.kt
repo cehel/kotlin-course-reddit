@@ -83,7 +83,7 @@ class FakeRedditNewsRemoteDataSource// Prevent direct instantiation.
     }
 
     override fun refreshNews() {
-        // Not required because the {@link ch.zuehlke.sbb.reddit.data.source.RedditRepository} handles the logic of refreshing the
+        // Not required because the {@link ch.zuehlke.reddit.data.source.RedditRepository} handles the logic of refreshing the
         // news from all the available data sources.
     }
 
