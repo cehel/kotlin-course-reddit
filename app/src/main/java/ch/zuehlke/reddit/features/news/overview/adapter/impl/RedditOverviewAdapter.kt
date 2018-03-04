@@ -13,6 +13,10 @@ import ch.zuehlke.reddit.models.RedditNewsData
 
 /**
  * Created by chsc on 12.11.17.
+ *
+ * // chapter_02_section_06_advanced_extension_exercise
+ * TODO(Implement by the use of the DiffUtil class in combination with a Delegate an Adapter which automatically calls the correct notify methods.)
+ * The goal should be an adapter in which no "notifyXXX" calls appear.
  */
 
 class RedditOverviewAdapter(listener: RedditNewsDelegateAdapter.OnNewsSelectedListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
