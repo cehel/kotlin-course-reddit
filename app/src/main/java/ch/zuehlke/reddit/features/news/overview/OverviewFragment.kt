@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import ch.zuehlke.reddit.Injection
 import ch.zuehlke.reddit.R
 import ch.zuehlke.reddit.features.news.NavigationController
+import ch.zuehlke.reddit.features.news.NewsActivity
 import ch.zuehlke.reddit.features.news.NewsViewModel
 import ch.zuehlke.reddit.features.news.NewsViewModelFactory
 import ch.zuehlke.reddit.features.news.detail.DetailFragment
@@ -30,12 +31,12 @@ class OverviewFragment : Fragment() {
     //Injections
 
     private var mOverviewAdapter: RedditOverviewAdapter? = null
-    private var mNavigationController: NavigationController? = null
+    private var mNavigationController: NavigationController<NewsActivity>? = null
 
 
     private val listener = object: OnNewsSelectedListener {
         override fun onNewsSelected(url: String) {
-            val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
+            val newsFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
             val newsViewModel = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)
 
             newsViewModel.setRedditUrl(url)
@@ -48,9 +49,8 @@ class OverviewFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater!!.inflate(R.layout.fragment_overview, container, false)
-
         container?.let {
-            mNavigationController = NavigationController(this.activity,it.id)
+            mNavigationController = NavigationController(this.activity as NewsActivity ,it.id)
         }
 
         return root

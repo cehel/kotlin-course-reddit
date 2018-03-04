@@ -11,10 +11,10 @@ import com.google.common.base.Strings
 import com.squareup.picasso.Picasso
 
 import ch.zuehlke.reddit.R
+import ch.zuehlke.reddit.common.friendlyTime
 import ch.zuehlke.reddit.features.news.overview.adapter.ViewType
 import ch.zuehlke.reddit.features.news.overview.adapter.ViewTypeDelegateAdapter
 import ch.zuehlke.reddit.models.RedditNewsData
-import ch.zuehlke.reddit.util.DateUtils
 
 /**
  * Created by chsc on 12.11.17.
@@ -49,7 +49,7 @@ class RedditNewsDelegateAdapter(private val mListener: RedditNewsDelegateAdapter
             mComments.text = data.numberOfComments.toString()
             mAuthor.text = data.author
             mTitle.text = data.title
-            mTime.text = DateUtils.friendlyTime(data.created)
+            mTime.text = data.created.friendlyTime()
             if (Strings.isNullOrEmpty(data.thumbnailUrl)) {
                 Picasso.with(mContext).load(R.drawable.reddit_placeholder).into(mThumbnail)
             } else {
