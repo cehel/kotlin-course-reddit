@@ -33,7 +33,7 @@ class DetailAdapter(private val mContext: Context) : RecyclerView.Adapter<Detail
 
         holder.mUsername.text = post.author
         holder.mText.text = post.body
-        holder.mCreated.text = post.createdUtc.friendlyTime()
+        holder.mCreated.text = post.created_utc.friendlyTime()
         setDepthPadding(holder.itemView, post.depth)
     }
 

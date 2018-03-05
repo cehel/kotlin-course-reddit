@@ -113,7 +113,7 @@ class RedditNewsLocalDataSource// Prevent direct instantiation.
         val values = ContentValues()
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_AUTHOR, data.author)
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_BODY, data.body)
-        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED, data.createdUtc)
+        values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_CREATED, data.created_utc)
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_ID, data.id)
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_PARENTPERMALINK, data.parentPermaLink)
         values.put(RedditNewsPersistenceContract.RedditPostEntry.COLUMN_NAME_DEPTH, data.depth)

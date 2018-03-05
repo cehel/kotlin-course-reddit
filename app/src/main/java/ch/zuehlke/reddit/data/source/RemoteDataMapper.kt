@@ -9,7 +9,6 @@ import okhttp3.ResponseBody
 import java.io.BufferedReader
 import java.io.IOException
 import java.lang.reflect.Type
-import java.util.ArrayList
 
 /**
  * Created by celineheldner on 20.02.18.
@@ -38,6 +37,7 @@ private constructor(gson: Gson, type: Type){
     }
 
     fun flattenRetrofitResponse(response: List<RedditPostElement>, parentPermaLink: String): List<RedditPostsData> {
+        // TODO: Convert to a chain of filter, map and flatMap to replace the loop and the if'
         val flatten = ArrayList<RedditPostsData>()
         for (redditPostElement in response) {
             if (redditPostElement is RedditPostElement.DataRedditPostElement) {
@@ -63,6 +63,7 @@ private constructor(gson: Gson, type: Type){
     }
 
     private fun recursivlyParseResponse(dataRedditPostElement: RedditPostElement.DataRedditPostElement, parentId: String?, parentPermaLink: String): List<RedditPostsData> {
+        // TODO: Convert to a chain of filter, map and flatMap to replace the loop and the if'S
         val posts = ArrayList<RedditPostsData>()
         for (child in dataRedditPostElement.data!!.children!!) {
             if (child is RedditPostElement.DataRedditPostElement) {
