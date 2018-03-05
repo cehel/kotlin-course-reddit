@@ -15,9 +15,11 @@ import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NewsActivity
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -76,7 +78,10 @@ class LoginFragment : BaseFragment(), Injectable {
         password.setText(passWord)
 
         disposable.add(
-                usernameObservable.subscribe { currentUsername ->
+                usernameObservable
+                        .debounce(500, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { currentUsername ->
                     if (currentUsername.isNotEmpty() && loginViewModel.isEmailValid(currentUsername)) {
                         username!!.error = null
                     } else {
