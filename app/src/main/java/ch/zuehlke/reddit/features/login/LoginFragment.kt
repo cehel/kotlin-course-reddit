@@ -13,6 +13,9 @@ import ch.zuehlke.reddit.BaseFragment
 import ch.zuehlke.reddit.R
 import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NewsActivity
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
@@ -31,6 +34,29 @@ class LoginFragment : BaseFragment(), Injectable {
 
     @Inject
     lateinit var preferencesHolder: PreferencesHolder
+    val usernameObservable = Observable.create(ObservableOnSubscribe<String> { emitter ->
+        val textWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                emitter.onNext(s.toString())
+            }
+        }
+        username.addTextChangedListener(textWatcher)
+        emitter.setCancellable {
+            username.removeTextChangedListener(textWatcher)
+        }
+    })
+    val disposable = CompositeDisposable()
+
+
+    override fun onPause() {
+        super.onPause()
+        disposable.clear()
+    }
+
 
     private var enteredUserName: String? by savedInstanceState()
 
@@ -49,23 +75,14 @@ class LoginFragment : BaseFragment(), Injectable {
         username.setText(userName)
         password.setText(passWord)
 
-            username.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                // Do nothing
-            }
-
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                // Do nothing
-            }
-
-            override fun afterTextChanged(editable: Editable) {
-                if (editable.isNotEmpty() && loginViewModel.isEmailValid(editable.toString())) {
-                    usernameLayout.error = null
-                } else {
-                    usernameLayout.error = getString(R.string.login_screen_invalid_email)
-                }
-            }
-        })
+        disposable.add(
+                usernameObservable.subscribe { currentUsername ->
+                    if (currentUsername.isNotEmpty() && loginViewModel.isEmailValid(currentUsername)) {
+                        username!!.error = null
+                    } else {
+                        username!!.error = getString(R.string.login_screen_invalid_email)
+                    }
+                })
 
         password.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
