@@ -33,7 +33,7 @@ class OverviewFragment : Fragment(), Injectable {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var mOverviewAdapter: RedditOverviewAdapter? = null
-    private var mNavigationController: NavigationController? = null
+    private var mNavigationController: NavigationController<NewsActivity>? = null
 
 
 
@@ -54,9 +54,8 @@ class OverviewFragment : Fragment(), Injectable {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater!!.inflate(R.layout.fragment_overview, container, false)
-
         container?.let {
-            mNavigationController = NavigationController(this.activity,it.id)
+            mNavigationController = NavigationController(this.activity as NewsActivity ,it.id)
         }
 
         return root

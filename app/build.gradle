@@ -7,7 +7,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "ch.zuehlke.sbb.reddit"
+        applicationId "ch.zuehlke.reddit"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
@@ -29,7 +29,7 @@ android {
             dimension 'tier'
         }
         prod {
-            applicationId "ch.zuehlke.sbb.reddit"
+            applicationId "ch.zuehlke.reddit"
             dimension 'tier'
         }
     }

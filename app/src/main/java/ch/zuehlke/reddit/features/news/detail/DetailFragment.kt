@@ -53,7 +53,6 @@ class DetailFragment: Fragment(), Injectable {
             setHasFixedSize(true)
         }
 
-        //val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
         val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java)
 
         // Set up progress indicator
@@ -78,7 +77,6 @@ class DetailFragment: Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
         val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java)
 
         newsViewModel.redditPostData.observe(this, Observer { posts: List<RedditPostsData>? ->

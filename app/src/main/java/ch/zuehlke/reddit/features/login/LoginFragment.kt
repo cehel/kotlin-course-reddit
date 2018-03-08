@@ -4,12 +4,13 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.zuehlke.reddit.BaseFragment
+import ch.zuehlke.reddit.Injection
 import ch.zuehlke.reddit.R
 import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NewsActivity
@@ -20,36 +21,32 @@ import kotlinx.android.synthetic.main.fragment_login.*
  * Created by chsc on 08.11.17.
  */
 
-class LoginFragment : Fragment(), Injectable {
+class LoginFragment : BaseFragment(), Injectable {
 
     companion object {
-
         fun newInstance(): LoginFragment = LoginFragment()
-
-        private const val BUNDLE_KEY_USERNAME = "bundle_username"
+        private const val KEY_USERNAME = "ch.zuehlke.reddit.features.login.key_username"
+        private const val KEY_PASSWORD = "ch.zuehlke.reddit.features.login.key_password"
     }
+
+
+    private var enteredUserName: String? by savedInstanceState()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.fragment_login, container, false)
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putString(BUNDLE_KEY_USERNAME,username.text.toString())
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
-            username.setText(savedInstanceState.getString(BUNDLE_KEY_USERNAME,""))
-        }
-        super.onViewStateRestored(savedInstanceState)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        val sharedPreferences = Injection.provideSharedPreferencesHolder(activity)
         val loginViewModel = ViewModelProviders.of(activity).get(LoginViewModel::class.java)
-        loginViewModel.viewState.observe(this, Observer { viewState: LoginViewModel.ViewState? -> handleViewState(viewState) })
-        loginButton.setOnClickListener{loginViewModel.login(username.text.toString(), password.text.toString())}
+        loginViewModel.viewState.observe(this, Observer { viewState: LoginState? -> handleViewState(viewState) })
+        loginButton.setOnClickListener { loginViewModel.login(username.text.toString(), password.text.toString()) }
+        val userName = sharedPreferences.getString(KEY_USERNAME, enteredUserName)
+        val passWord = sharedPreferences.getString(KEY_PASSWORD,"")
 
+        username.setText(userName)
+        password.setText(passWord)
 
             username.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -88,18 +85,19 @@ class LoginFragment : Fragment(), Injectable {
         })
     }
 
-    fun handleViewState(viewState: LoginViewModel.ViewState?){
+    fun handleViewState(viewState: LoginState?) {
+        val sharedPreferencesHolder = Injection.provideSharedPreferencesHolder(activity)
         when(viewState){
-            LoginViewModel.ViewState.LOADING -> progressBar.visibility = View.VISIBLE
-            LoginViewModel.ViewState.NONE -> progressBar.visibility = View.GONE
-            LoginViewModel.ViewState.INVALID_PASSWORD -> passwordLayout.error = getString(R.string.login_screen_invalid_password)
-            LoginViewModel.ViewState.INVALID_USERNAME -> usernameLayout.error = getString(R.string.login_screen_invalid_username)
-            LoginViewModel.ViewState.INVALID_CREDENTIALS -> {
+            LoginState.WrongCredentials -> {
                 usernameLayout.error = getString(R.string.login_screen_invalid_username)
-                passwordLayout.error = getString(R.string.login_screen_invalid_password)
-            }
-            LoginViewModel.ViewState.LOGGED_IN -> {
+                passwordLayout.error = getString(R.string.login_screen_invalid_password)}
+            LoginState.WrongUserName -> usernameLayout.error = getString(R.string.login_screen_invalid_username)
+            LoginState.WrongPassword -> passwordLayout.error = getString(R.string.login_screen_invalid_password)
+            LoginState.Loading -> progressBar.visibility = View.VISIBLE
+            is LoginState.LoggedIn -> {
                 progressBar.visibility = View.GONE
+                sharedPreferencesHolder.putString(KEY_USERNAME,viewState.username).commit()
+                sharedPreferencesHolder.putString(KEY_PASSWORD,viewState.password).commit()
                 val intent = Intent(context, NewsActivity::class.java)
                 startActivity(intent)
                 activity.finish()

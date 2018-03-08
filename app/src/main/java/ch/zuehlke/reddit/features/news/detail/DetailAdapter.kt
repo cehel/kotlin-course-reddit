@@ -11,8 +11,8 @@ import android.widget.TextView
 import java.util.ArrayList
 
 import ch.zuehlke.reddit.R
+import ch.zuehlke.reddit.common.friendlyTime
 import ch.zuehlke.reddit.models.RedditPostsData
-import ch.zuehlke.reddit.util.DateUtils
 
 /**
  * Created by chsc on 13.11.17.
@@ -33,7 +33,7 @@ class DetailAdapter(private val mContext: Context) : RecyclerView.Adapter<Detail
 
         holder.mUsername.text = post.author
         holder.mText.text = post.body
-        holder.mCreated.text = DateUtils.friendlyTime(post.createdUtc)
+        holder.mCreated.text = post.createdUtc.friendlyTime()
         setDepthPadding(holder.itemView, post.depth)
     }
 

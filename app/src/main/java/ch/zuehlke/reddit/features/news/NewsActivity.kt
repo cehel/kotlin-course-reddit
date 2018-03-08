@@ -3,15 +3,15 @@ package ch.zuehlke.reddit.features.news
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import ch.zuehlke.reddit.R
-import ch.zuehlke.reddit.features.BaseActivtiy
+import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
 
 /**
  * Created by chsc on 11.11.17.
  */
 
-class NewsActivity : BaseActivtiy() {
+class NewsActivity : AppCompatActivity(),SimpleAppCompatNavigation {
 
-    private var mNavigationController: NavigationController? = null
+    private var mNavigationController : NavigationController<NewsActivity>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
