@@ -9,6 +9,7 @@ import ch.zuehlke.reddit.data.source.remote.RedditAPI
 import ch.zuehlke.reddit.data.source.remote.RedditElementTypeAdapterFactory
 import ch.zuehlke.reddit.data.source.remote.RedditNewsDataRemoteDataSource
 import ch.zuehlke.reddit.data.source.remote.model.posts.RedditPostElement
+import ch.zuehlke.reddit.features.login.PreferencesHolder
 import com.google.common.base.Preconditions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -30,6 +31,7 @@ import javax.inject.Singleton
 class AppModule(){
 
     private val REDDIT_END_POINT = "https://www.reddit.com/r/kotlin/"
+    private val PREFERENCES_NAME = "redditApp"
 
     @Provides
     fun provideContext(app: Application): Context {
@@ -78,6 +80,10 @@ class AppModule(){
     @Provides
     @Singleton
     fun provideRedditLocalDataSource(context: Context) = RedditNewsLocalDataSource(context)
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferenceHolder(context: Context) = PreferencesHolder(context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE))
 
 
     @Provides

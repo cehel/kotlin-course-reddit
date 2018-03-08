@@ -5,12 +5,13 @@ import android.support.v7.app.AppCompatActivity
 
 import ch.zuehlke.reddit.R
 import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
+import ch.zuehlke.reddit.features.BaseActivtiy
 
 /**
  * Created by chsc on 08.11.17.
  */
 
-class LoginActivity : AppCompatActivity(), SimpleAppCompatNavigation {
+class LoginActivity : BaseActivtiy(), SimpleAppCompatNavigation {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

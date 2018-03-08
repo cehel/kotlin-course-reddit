@@ -13,8 +13,8 @@ import javax.inject.Inject
  */
 class LoginViewModel: ViewModel{
 
-    private val mutableViewState: MutableLiveData<ViewState> = MutableLiveData<ViewState>().apply { ViewState.NONE }
-    val viewState : LiveData<ViewState> = mutableViewState
+    private val mutableViewState: MutableLiveData<LoginState> = MutableLiveData<LoginState>()
+    val viewState : LiveData<LoginState> = mutableViewState
 
     private val emailPattern: Pattern = Pattern.compile(
             "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
@@ -33,12 +33,15 @@ class LoginViewModel: ViewModel{
     }
 
     fun login(userEmail: String, password: String) {
-        mutableViewState.postValue(ViewState.LOADING)
+        mutableViewState.postValue(LoginState.Loading)
         when{
-            userEmail != "test.tester@test.com" && password != "123456" -> {  mutableViewState.postValue(ViewState.INVALID_CREDENTIALS)}
-            userEmail != "test.tester@test.com" -> {  mutableViewState.postValue(ViewState.INVALID_USERNAME)}
-            password != "123456" -> {  mutableViewState.postValue(ViewState.INVALID_PASSWORD)}
-            else -> {mutableViewState.postValue(ViewState.LOGGED_IN)}
+            userEmail != "test.tester@test.com" && password != "123456" -> {  mutableViewState.postValue(LoginState.WrongCredentials)}
+            userEmail != "test.tester@test.com" -> {  mutableViewState.postValue(LoginState.WrongUserName)}
+            password != "123456" -> {  mutableViewState.postValue(LoginState.WrongPassword)}
+            else -> {
+                val loggedIn = LoginState.LoggedIn(userEmail, password)
+                mutableViewState.postValue(loggedIn)
+            }
         }
     }
 

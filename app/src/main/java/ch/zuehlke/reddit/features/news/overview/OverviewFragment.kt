@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import ch.zuehlke.reddit.R
 import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NavigationController
+import ch.zuehlke.reddit.features.news.NewsActivity
 import ch.zuehlke.reddit.features.news.NewsViewModel
 import ch.zuehlke.reddit.features.news.detail.DetailFragment
 import ch.zuehlke.reddit.features.news.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
@@ -41,8 +42,6 @@ class OverviewFragment : Fragment(), Injectable {
     private val listener = object: OnNewsSelectedListener {
         override fun onNewsSelected(url: String) {
             val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java);
-                   /* NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
-             = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)*/
 
             newsViewModel.setRedditUrl(url)
             mNavigationController?.navigateToFragment(DetailFragment::class.java)
@@ -65,7 +64,6 @@ class OverviewFragment : Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
         val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java);
 
         newsViewModel.viewState.observe(this, Observer { viewState: NewsViewModel.ViewState? -> handleViewState(viewState)  })

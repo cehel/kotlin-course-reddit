@@ -10,11 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.zuehlke.reddit.BaseFragment
-import ch.zuehlke.reddit.Injection
 import ch.zuehlke.reddit.R
 import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NewsActivity
 import kotlinx.android.synthetic.main.fragment_login.*
+import javax.inject.Inject
 
 
 /**
@@ -29,6 +29,8 @@ class LoginFragment : BaseFragment(), Injectable {
         private const val KEY_PASSWORD = "ch.zuehlke.reddit.features.login.key_password"
     }
 
+    @Inject
+    lateinit var preferencesHolder: PreferencesHolder
 
     private var enteredUserName: String? by savedInstanceState()
 
@@ -38,12 +40,11 @@ class LoginFragment : BaseFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val sharedPreferences = Injection.provideSharedPreferencesHolder(activity)
         val loginViewModel = ViewModelProviders.of(activity).get(LoginViewModel::class.java)
         loginViewModel.viewState.observe(this, Observer { viewState: LoginState? -> handleViewState(viewState) })
         loginButton.setOnClickListener { loginViewModel.login(username.text.toString(), password.text.toString()) }
-        val userName = sharedPreferences.getString(KEY_USERNAME, enteredUserName)
-        val passWord = sharedPreferences.getString(KEY_PASSWORD,"")
+        val userName = preferencesHolder.getString(KEY_USERNAME, enteredUserName)
+        val passWord = preferencesHolder.getString(KEY_PASSWORD,"")
 
         username.setText(userName)
         password.setText(passWord)
@@ -86,7 +87,6 @@ class LoginFragment : BaseFragment(), Injectable {
     }
 
     fun handleViewState(viewState: LoginState?) {
-        val sharedPreferencesHolder = Injection.provideSharedPreferencesHolder(activity)
         when(viewState){
             LoginState.WrongCredentials -> {
                 usernameLayout.error = getString(R.string.login_screen_invalid_username)
@@ -96,8 +96,8 @@ class LoginFragment : BaseFragment(), Injectable {
             LoginState.Loading -> progressBar.visibility = View.VISIBLE
             is LoginState.LoggedIn -> {
                 progressBar.visibility = View.GONE
-                sharedPreferencesHolder.putString(KEY_USERNAME,viewState.username).commit()
-                sharedPreferencesHolder.putString(KEY_PASSWORD,viewState.password).commit()
+                preferencesHolder.putString(KEY_USERNAME,viewState.username).commit()
+                preferencesHolder.putString(KEY_PASSWORD,viewState.password).commit()
                 val intent = Intent(context, NewsActivity::class.java)
                 startActivity(intent)
                 activity.finish()

@@ -1,15 +1,17 @@
 package ch.zuehlke.reddit.features.news
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import ch.zuehlke.reddit.R
 import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
+import ch.zuehlke.reddit.features.BaseActivtiy
 
 /**
  * Created by chsc on 11.11.17.
  */
 
-class NewsActivity : AppCompatActivity(),SimpleAppCompatNavigation {
+class NewsActivity : BaseActivtiy(),SimpleAppCompatNavigation {
 
     private var mNavigationController : NavigationController<NewsActivity>? = null
 
