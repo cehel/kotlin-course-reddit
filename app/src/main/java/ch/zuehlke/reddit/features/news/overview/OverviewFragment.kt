@@ -1,6 +1,7 @@
 package ch.zuehlke.reddit.features.news.overview
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -10,33 +11,38 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.zuehlke.reddit.Injection
 import ch.zuehlke.reddit.R
+import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NavigationController
 import ch.zuehlke.reddit.features.news.NewsViewModel
-import ch.zuehlke.reddit.features.news.NewsViewModelFactory
 import ch.zuehlke.reddit.features.news.detail.DetailFragment
 import ch.zuehlke.reddit.features.news.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.reddit.features.news.overview.adapter.impl.RedditOverviewAdapter
 import ch.zuehlke.reddit.models.RedditNewsData
 import kotlinx.android.synthetic.main.fragment_overview.*
+import javax.inject.Inject
 
 /**
  * Created by chsc on 11.11.17.
  */
 
-class OverviewFragment : Fragment() {
+class OverviewFragment : Fragment(), Injectable {
 
     //Injections
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var mOverviewAdapter: RedditOverviewAdapter? = null
     private var mNavigationController: NavigationController? = null
 
 
+
+
     private val listener = object: OnNewsSelectedListener {
         override fun onNewsSelected(url: String) {
-            val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
-            val newsViewModel = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)
+            val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java);
+                   /* NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
+             = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)*/
 
             newsViewModel.setRedditUrl(url)
             mNavigationController?.navigateToFragment(DetailFragment::class.java)
@@ -60,8 +66,8 @@ class OverviewFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
-        val newsViewModel = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)
+        //val newsFactory: NewsViewModelFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
+        val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java);
 
         newsViewModel.viewState.observe(this, Observer { viewState: NewsViewModel.ViewState? -> handleViewState(viewState)  })
         newsViewModel.redditNewsData.observe( this, Observer { newsData: List<RedditNewsData>? -> newsData?.let {  mOverviewAdapter?.clearAndAddNews(it) }})

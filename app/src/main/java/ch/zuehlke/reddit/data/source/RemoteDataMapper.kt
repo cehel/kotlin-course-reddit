@@ -52,7 +52,7 @@ private constructor(gson: Gson, type: Type){
 
                     } else {
                         data?.let {
-                            flatten.addAll(recursivlyParseResponse(dataElement, data!!.id, parentPermaLink))
+                            flatten.addAll(recursivlyParseResponse(dataElement, data.id, parentPermaLink))
                         }
 
                     }
@@ -68,14 +68,11 @@ private constructor(gson: Gson, type: Type){
             if (child is RedditPostElement.DataRedditPostElement) {
                 val data = child.data
                 if (data != null) {
-                    data?.let {
-                        val postData = RedditPostsData(data.id!!, parentId, data.author, data.body, data.created_utc, data.depth, data.body_html, parentPermaLink, order++.toLong())
-                        posts.add(postData)
-                        if (data.replies != null && data.replies is RedditPostElement.DataRedditPostElement) {
-                            posts.addAll(recursivlyParseResponse(data.replies as RedditPostElement.DataRedditPostElement, data.id!!, parentPermaLink))
-                        }
+                    val postData = RedditPostsData(data.id!!, parentId, data.author, data.body, data.created_utc, data.depth, data.body_html, parentPermaLink, order++.toLong())
+                    posts.add(postData)
+                    if (data.replies != null && data.replies is RedditPostElement.DataRedditPostElement) {
+                        posts.addAll(recursivlyParseResponse(data.replies as RedditPostElement.DataRedditPostElement, data.id!!, parentPermaLink))
                     }
-
                 }
             }
 

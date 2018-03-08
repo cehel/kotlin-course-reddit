@@ -10,8 +10,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.zuehlke.reddit.Injection
 import ch.zuehlke.reddit.R
+import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NewsActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
  * Created by chsc on 08.11.17.
  */
 
-class LoginFragment : Fragment() {
+class LoginFragment : Fragment(), Injectable {
 
     companion object {
 
@@ -33,28 +33,25 @@ class LoginFragment : Fragment() {
             inflater!!.inflate(R.layout.fragment_login, container, false)
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putString(BUNDLE_KEY_USERNAME, username.text.toString())
+        outState?.putString(BUNDLE_KEY_USERNAME,username.text.toString())
         super.onSaveInstanceState(outState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
-            username.setText(savedInstanceState.getString(BUNDLE_KEY_USERNAME, ""))
+            username.setText(savedInstanceState.getString(BUNDLE_KEY_USERNAME,""))
         }
         super.onViewStateRestored(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val loginViewModelFactory = LoginViewModelFactory(Injection.provideSharedPreferencesHolder(activity))
-        val loginViewModel = ViewModelProviders.of(activity, loginViewModelFactory).get(LoginViewModel::class.java)
+        val loginViewModel = ViewModelProviders.of(activity).get(LoginViewModel::class.java)
         loginViewModel.viewState.observe(this, Observer { viewState: LoginViewModel.ViewState? -> handleViewState(viewState) })
-        loginButton.setOnClickListener { loginViewModel.login(username.text.toString(), password.text.toString()) }
-        val (userName, userPassword) = loginViewModel.getLoginData()
-        username.setText(userName)
-        password.setText(userPassword)
+        loginButton.setOnClickListener{loginViewModel.login(username.text.toString(), password.text.toString())}
 
-        username.addTextChangedListener(object : TextWatcher {
+
+            username.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 // Do nothing
             }
@@ -89,12 +86,10 @@ class LoginFragment : Fragment() {
                 }
             }
         })
-
-
     }
 
-    fun handleViewState(viewState: LoginViewModel.ViewState?) {
-        when (viewState) {
+    fun handleViewState(viewState: LoginViewModel.ViewState?){
+        when(viewState){
             LoginViewModel.ViewState.LOADING -> progressBar.visibility = View.VISIBLE
             LoginViewModel.ViewState.NONE -> progressBar.visibility = View.GONE
             LoginViewModel.ViewState.INVALID_PASSWORD -> passwordLayout.error = getString(R.string.login_screen_invalid_password)

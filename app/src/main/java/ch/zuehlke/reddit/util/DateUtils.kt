@@ -1,5 +1,6 @@
 package ch.zuehlke.reddit.util
 
+import java.util.Calendar
 import java.util.Date
 
 /**

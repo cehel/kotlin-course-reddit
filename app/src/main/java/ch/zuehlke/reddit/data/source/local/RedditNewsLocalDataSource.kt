@@ -10,13 +10,14 @@ import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
 
 import com.google.common.base.Preconditions.checkNotNull
+import javax.inject.Inject
 
 /**
  * Created by chsc on 08.11.17.
  */
 
 class RedditNewsLocalDataSource// Prevent direct instantiation.
-private constructor(context: Context) : RedditDataSource {
+@Inject constructor(context: Context) : RedditDataSource {
 
     private val mDbHelper: RedditNewsDataHelper
 
@@ -167,16 +168,4 @@ private constructor(context: Context) : RedditDataSource {
         db.close()
     }
 
-    companion object {
-
-
-        private var INSTANCE: RedditNewsLocalDataSource? = null
-
-        fun getInstance(context: Context): RedditNewsLocalDataSource {
-            if (INSTANCE == null) {
-                INSTANCE = RedditNewsLocalDataSource(context)
-            }
-            return INSTANCE!!
-        }
-    }
 }

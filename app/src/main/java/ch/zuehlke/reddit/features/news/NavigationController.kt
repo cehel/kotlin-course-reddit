@@ -18,10 +18,8 @@ class NavigationController constructor(activity: FragmentActivity, fragmentConta
             // Create the fragment
             overviewFragment = OverviewFragment.newInstance()
             ActivityUtils.addFragmentToActivity(
-                    mActivity.supportFragmentManager, overviewFragment!!, mContainerId)
+                    mActivity.supportFragmentManager, overviewFragment, mContainerId)
         }
-
-
     }
 
     fun navigateToFragment(fragment: Class<out Fragment>){

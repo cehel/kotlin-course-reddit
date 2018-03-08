@@ -21,9 +21,10 @@ import ch.zuehlke.reddit.data.source.remote.model.posts.RedditPostElement.Compan
 
 class RedditElementTypeAdapterFactory private constructor() : TypeAdapterFactory {
 
+    @SuppressWarnings("unchecked")
     override fun <T> create(gson: Gson, typeToken: TypeToken<T>): TypeAdapter<T>? {
         // Not the RedditPostElement class?
-        if (!RedditPostElement::class.java!!.isAssignableFrom(typeToken.rawType)) {
+        if (!RedditPostElement::class.java.isAssignableFrom(typeToken.rawType)) {
             // Then just let Gson pick up the next best type adapter
             return null
         }

@@ -1,16 +1,16 @@
 package ch.zuehlke.reddit.features.login
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 
 import ch.zuehlke.reddit.R
+import ch.zuehlke.reddit.features.BaseActivtiy
 import ch.zuehlke.reddit.util.ActivityUtils
 
 /**
  * Created by chsc on 08.11.17.
  */
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivtiy() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
             // Create the fragment
             loginFragment = LoginFragment.newInstance()
             ActivityUtils.addFragmentToActivity(
-                    supportFragmentManager, loginFragment!!, R.id.contentFrame)
+                    supportFragmentManager, loginFragment, R.id.contentFrame)
         }
     }
 }

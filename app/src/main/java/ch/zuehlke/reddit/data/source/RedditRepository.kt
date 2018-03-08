@@ -10,14 +10,21 @@ import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
 
 import com.google.common.base.Preconditions.checkNotNull
+import javax.inject.Inject
 
 /**
  * Created by chsc on 08.11.17.
  */
 
 class RedditRepository
-private constructor(newsRemoteDataSource: RedditDataSource,
+@Inject constructor(newsRemoteDataSource: RedditDataSource,
                     newsLocalDataSource: RedditDataSource, private val mContext: Context) : RedditDataSource {
+
+    companion object {
+
+        private val COMMENT_SECION = "comments/"
+
+    }
 
     private val mRedditNewsRemoteDataSource: RedditDataSource
 
@@ -230,35 +237,5 @@ private constructor(newsRemoteDataSource: RedditDataSource,
         }
     }
 
-    companion object {
 
-        private var INSTANCE: RedditRepository? = null
-
-        private val COMMENT_SECION = "comments/"
-
-        /**
-         * Returns the single instance of this class, creating it if necessary.
-
-         * @param newsLocalDataSource the backend redditPost source
-         * *
-         * @param newsLocalDataSource  the device storage redditPost source
-         * *
-         * @return the [RedditRepository] instance
-         */
-        fun getInstance(newsRemoteDataSource: RedditDataSource,
-                        newsLocalDataSource: RedditDataSource, context: Context): RedditRepository {
-            if (INSTANCE == null) {
-                INSTANCE = RedditRepository(newsRemoteDataSource, newsLocalDataSource, context)
-            }
-            return INSTANCE!!
-        }
-
-        /**
-         * Used to force [.getInstance] to create a new instance
-         * next time it's called.
-         */
-        fun destroyInstance() {
-            INSTANCE = null
-        }
-    }
 }

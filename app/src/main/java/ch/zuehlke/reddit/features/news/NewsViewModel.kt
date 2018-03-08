@@ -8,13 +8,14 @@ import ch.zuehlke.reddit.data.source.RedditRepository
 import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
 import kotlinx.coroutines.experimental.async
+import javax.inject.Inject
 
 /**
  * Created by celineheldner on 28.02.18.
  */
 
 
-class NewsViewModel(private val redditRepository: RedditRepository): ViewModel(){
+class NewsViewModel @Inject constructor( private val redditRepository: RedditRepository): ViewModel(){
 
     private val mutableRedditNewsData: MutableLiveData<MutableList<RedditNewsData>> = MutableLiveData<MutableList<RedditNewsData>>().apply { emptyList<RedditNewsData>() }
     val redditNewsData: LiveData<MutableList<RedditNewsData>> = mutableRedditNewsData

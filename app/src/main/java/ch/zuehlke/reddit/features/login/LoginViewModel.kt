@@ -5,17 +5,13 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.common.base.Strings
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 
 /**
  * Created by celineheldner on 28.02.18.
  */
-class LoginViewModel(private val preferencesHolder: PreferencesHolder): ViewModel(){
-
-    private companion object {
-        private const val KEY_USERNAME = "ch.zuehlke.reddit.features.login.key_username"
-        private const val KEY_PASSWORD = "ch.zuehlke.reddit.features.login.key_password"
-    }
+class LoginViewModel: ViewModel{
 
     private val mutableViewState: MutableLiveData<ViewState> = MutableLiveData<ViewState>().apply { ViewState.NONE }
     val viewState : LiveData<ViewState> = mutableViewState
@@ -32,24 +28,18 @@ class LoginViewModel(private val preferencesHolder: PreferencesHolder): ViewMode
         LOADING,NONE,INVALID_PASSWORD,INVALID_USERNAME,INVALID_CREDENTIALS,LOGGED_IN
     }
 
+    @Inject constructor(){
+
+    }
+
     fun login(userEmail: String, password: String) {
         mutableViewState.postValue(ViewState.LOADING)
         when{
             userEmail != "test.tester@test.com" && password != "123456" -> {  mutableViewState.postValue(ViewState.INVALID_CREDENTIALS)}
             userEmail != "test.tester@test.com" -> {  mutableViewState.postValue(ViewState.INVALID_USERNAME)}
             password != "123456" -> {  mutableViewState.postValue(ViewState.INVALID_PASSWORD)}
-            else -> {
-                preferencesHolder.putString(KEY_USERNAME,userEmail).commit()
-                preferencesHolder.putString(KEY_PASSWORD,password).commit()
-                mutableViewState.postValue(ViewState.LOGGED_IN)
-            }
+            else -> {mutableViewState.postValue(ViewState.LOGGED_IN)}
         }
-    }
-
-    fun getLoginData(): Pair<String,String> {
-        val username = preferencesHolder.getString(KEY_USERNAME,"")
-        val password = preferencesHolder.getString(KEY_PASSWORD,"")
-        return Pair(username,password)
     }
 
     fun verifyPasswordLength(password: String): Boolean =

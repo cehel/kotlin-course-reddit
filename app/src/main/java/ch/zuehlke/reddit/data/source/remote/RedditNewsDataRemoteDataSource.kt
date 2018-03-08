@@ -14,14 +14,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import javax.inject.Inject
 
 
 /**
  * Created by chsc on 08.11.17.
  */
 
-class RedditNewsDataRemoteDataSource// Prevent direct instantiation.
-private constructor(context: Context, redditAPI: RedditAPI, dataMapper: RemoteDataMapper) : RedditDataSource {
+class RedditNewsDataRemoteDataSource
+@Inject constructor(context: Context, redditAPI: RedditAPI, dataMapper: RemoteDataMapper) : RedditDataSource {
     private var after = ""
     private var order = -1
     private val mRedditAPI: RedditAPI
@@ -36,16 +37,6 @@ private constructor(context: Context, redditAPI: RedditAPI, dataMapper: RemoteDa
 
     }
 
-    companion object {
-        private var INSTANCE: RedditNewsDataRemoteDataSource? = null
-
-        fun getInstance(context: Context, redditAPI: RedditAPI, dataMapper: RemoteDataMapper): RedditNewsDataRemoteDataSource {
-            if (INSTANCE == null) {
-                INSTANCE = RedditNewsDataRemoteDataSource(context, redditAPI, dataMapper)
-            }
-            return INSTANCE!!
-        }
-    }
 
 
     override fun getMoreNews(callback: RedditDataSource.LoadNewsCallback) {
