@@ -1,15 +1,7 @@
 package ch.zuehlke.reddit.features.login
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.Observer
 import ch.zuehlke.reddit.BaseTest
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Rule
-
 import org.junit.Test
-import org.junit.rules.TestRule
-import org.mockito.Mock
 
 
 /**
@@ -17,47 +9,46 @@ import org.mockito.Mock
  */
 class LoginViewModelTest: BaseTest(){
 
-    @Mock lateinit var observer: Observer<LoginState>
+    /*TODO:chapter_3_testing_exercise
+        Create a mock android.arch.lifecycle.Observer
 
-    @get:Rule
-    var rule:TestRule = InstantTaskExecutorRule()
+        Check the slides for guidance
+     */
 
     override fun setup(){
         super.setup()
-        this.observer = mock()
-        loginViewModel.viewState.observeForever(observer)
+        /*TODO:chapter_3_testing_exercise
+            let the observer observe the LoginState from the LoginViewModel
+        */
 
     }
 
     @Test
     fun testWrongCredentialsLogin(){
-
-        loginViewModel.login("wronguser","short")
-
-        verify(observer).onChanged(LoginState.WrongCredentials)
+        /*TODO:chapter_3_testing_exercise
+            call login and verify the behaviour
+        */
     }
 
     @Test
     fun testWrongPassword(){
-
-        loginViewModel.login("test.tester@test.com","short")
-
-        verify(observer).onChanged(LoginState.WrongPassword)
+        /*TODO:chapter_3_testing_exercise
+                   call login and verify the behaviour
+               */
     }
 
     @Test
     fun testWrongUser(){
 
-        loginViewModel.login("wronguser","123456")
-
-        verify(observer).onChanged(LoginState.WrongUserName)
+        /*TODO:chapter_3_testing_exercise
+           call login and verify the behaviour
+       */
     }
 
     @Test
     fun correctCredentials(){
-
-        loginViewModel.login("test.tester@test.com","123456")
-
-        verify(observer).onChanged(LoginState.Loading)
+        /*TODO:chapter_3_testing_exercise
+           call login and verify the behaviour
+       */
     }
 }

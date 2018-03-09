@@ -14,8 +14,11 @@ import javax.inject.Inject
 
 open class BaseTest {
 
-    @Inject
-    lateinit var loginViewModel: LoginViewModel
+    /*
+    TODO:chapter_3_testing_exercise
+        Inject the LoginViewModel
+        (As a Dagger Reminder: Look at the AppComponentTest - does it have the relevant Module connected?)
+     */
 
     @Inject
     lateinit var newsViewModel: NewsViewModel
