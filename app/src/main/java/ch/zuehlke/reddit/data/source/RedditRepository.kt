@@ -2,6 +2,7 @@ package ch.zuehlke.reddit.data.source
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.util.Log
 
 import java.util.ArrayList
 import java.util.LinkedHashMap
@@ -10,6 +11,7 @@ import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
 
 import com.google.common.base.Preconditions.checkNotNull
+import io.reactivex.Flowable
 import javax.inject.Inject
 
 /**
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 class RedditRepository
 @Inject constructor(newsRemoteDataSource: RedditDataSource,
-                    newsLocalDataSource: RedditDataSource, private val mContext: Context) : RedditDataSource {
+                    newsLocalDataSource: RedditDataSource,
+                    private val mContext: Context) : RedditDataSource {
 
     companion object {
 
@@ -47,25 +50,22 @@ class RedditRepository
         mRedditNewsLocalDataSource = checkNotNull(newsLocalDataSource)
     }
 
-
-    override fun getMoreNews(callback: RedditDataSource.LoadNewsCallback) {
-        checkNotNull(callback)
-        addNewsFromRemoteDataSource(callback)
-    }
-
-    private fun addNewsFromRemoteDataSource(callback: RedditDataSource.LoadNewsCallback) {
-        mRedditNewsRemoteDataSource.getMoreNews(object : RedditDataSource.LoadNewsCallback {
-            override fun onNewsLoaded(news: List<RedditNewsData>) {
-                refreshCache(news)
-                updateLocalDataSource(news)
-                callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
-            }
-
-            override fun onDataNotAvailable() {
-                callback.onDataNotAvailable()
-            }
-        })
-    }
+    // FIXME: This setup seems not very sensible because we do not have a notion of the current location
+    //        of news already in DB - I think we would need to store the current tag and pass that
+    //        to the remote source
+    override val news =
+            if (isNetworkAvailable)
+                Flowable.concatEager(
+                        listOf(
+                                newsLocalDataSource.news,
+                                newsRemoteDataSource.news.map {
+                                    it.forEach(newsLocalDataSource::saveRedditNews);
+                                    it
+                                }
+                        ),1, 1
+                )
+            else
+                newsLocalDataSource.news
 
     private val isNetworkAvailable: Boolean
         get() {
@@ -73,63 +73,6 @@ class RedditRepository
             val activeNetworkInfo = connectivityManager.activeNetworkInfo
             return activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
-
-    override fun getNews(callback: RedditDataSource.LoadNewsCallback) {
-        checkNotNull(callback)
-
-        mRedditNewsRemoteDataSource.refreshNews()
-        // Respond immediately with cache if available and not dirty
-        if (mCacheNews != null && !mCacheIsDirty) {
-            callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
-            return
-        }
-
-        if (!isNetworkAvailable) {
-            // Query the local storage if available. If not, query the network.
-            mRedditNewsLocalDataSource.getNews(object : RedditDataSource.LoadNewsCallback {
-                override fun onNewsLoaded(news: List<RedditNewsData>) {
-                    refreshCache(news)
-                    callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
-                }
-
-                override fun onDataNotAvailable() {
-                    callback.onDataNotAvailable()
-                }
-            })
-
-        } else {
-            if (mCacheIsDirty) {
-                // If the cache is dirty we need to fetch new data from the network. The Cache is only dirty, when a refreshNews is going on
-                getNewsFromRemoteDataSource(object : RedditDataSource.LoadNewsCallback {
-                    override fun onNewsLoaded(news: List<RedditNewsData>) {
-                        for (newsData in news) {
-                            saveRedditNews(newsData)
-                        }
-                        refreshCache(news)
-                        callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
-                    }
-
-                    override fun onDataNotAvailable() {
-                        callback.onDataNotAvailable()
-                    }
-                })
-            } else {
-                // Query the local storage if available. If not, query the network.
-                mRedditNewsLocalDataSource.getNews(object : RedditDataSource.LoadNewsCallback {
-                    override fun onNewsLoaded(news: List<RedditNewsData>) {
-                        refreshCache(news)
-                        callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
-                    }
-
-                    override fun onDataNotAvailable() {
-                        getNewsFromRemoteDataSource(callback)
-                    }
-                })
-            }
-        }
-
-
-    }
 
     override fun getPosts(callback: RedditDataSource.LoadPostsCallback, permalink: String) {
         val convertedPermaLink = convertURLToRemote(permalink)
@@ -172,11 +115,6 @@ class RedditRepository
 
     }
 
-    override fun refreshNews() {
-        mCacheIsDirty = true
-        mRedditNewsRemoteDataSource.refreshNews()
-    }
-
     override fun deleteAllNews() {
         mRedditNewsRemoteDataSource.deleteAllNews() // Although we call deleteAllNews() on the remote datasource, it is not implemented.
         mRedditNewsLocalDataSource.deleteAllNews()
@@ -198,44 +136,5 @@ class RedditRepository
         }
         mCacheNews!!.put(data.id!!, data)
     }
-
-    private fun getNewsFromRemoteDataSource(callback: RedditDataSource.LoadNewsCallback) {
-        mRedditNewsRemoteDataSource.getNews(object : RedditDataSource.LoadNewsCallback {
-            override fun onNewsLoaded(news: List<RedditNewsData>) {
-                refreshCache(news)
-                refreshLocalDataSource(news)
-                callback.onNewsLoaded(ArrayList(mCacheNews!!.values))
-            }
-
-            override fun onDataNotAvailable() {
-                callback.onDataNotAvailable()
-            }
-        })
-    }
-
-    private fun refreshCache(news: List<RedditNewsData>) {
-        if (mCacheNews == null) {
-            mCacheNews = LinkedHashMap<String, RedditNewsData>()
-        }
-        mCacheNews!!.clear()
-        for (data in news) {
-            mCacheNews!!.put(data.id!!, data)
-        }
-        mCacheIsDirty = false
-    }
-
-    private fun updateLocalDataSource(news: List<RedditNewsData>) {
-        for (data in news) {
-            mRedditNewsLocalDataSource.saveRedditNews(data)
-        }
-    }
-
-    private fun refreshLocalDataSource(news: List<RedditNewsData>) {
-        mRedditNewsLocalDataSource.deleteAllNews()
-        for (data in news) {
-            mRedditNewsLocalDataSource.saveRedditNews(data)
-        }
-    }
-
 
 }

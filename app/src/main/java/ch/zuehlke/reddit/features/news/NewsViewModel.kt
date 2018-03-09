@@ -3,19 +3,30 @@ package ch.zuehlke.reddit.features.news
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import ch.zuehlke.reddit.data.source.RedditDataSource
 import ch.zuehlke.reddit.data.source.RedditRepository
 import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
+import io.reactivex.Flowable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subscribers.ResourceSubscriber
 import kotlinx.coroutines.experimental.async
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by celineheldner on 28.02.18.
  */
 
 
-class NewsViewModel @Inject constructor( private val redditRepository: RedditRepository): ViewModel(){
+class NewsViewModel @Inject constructor(
+        private val redditRepository: RedditRepository,
+        @Named("io-scheduler") private val ioScheduler: Scheduler = Schedulers.io(),
+        @Named("main-scheduler") private val mainScheduler: Scheduler = AndroidSchedulers.mainThread()
+): ViewModel(){
 
     private val mutableRedditNewsData: MutableLiveData<MutableList<RedditNewsData>> = MutableLiveData<MutableList<RedditNewsData>>().apply { emptyList<RedditNewsData>() }
     val redditNewsData: LiveData<MutableList<RedditNewsData>> = mutableRedditNewsData
@@ -28,61 +39,70 @@ class NewsViewModel @Inject constructor( private val redditRepository: RedditRep
     val viewState: LiveData<ViewState> = mutableViewState
 
     private val mutableRedditPostData: MutableLiveData<MutableList<RedditPostsData>> = MutableLiveData<MutableList<RedditPostsData>>().apply { mutableListOf<RedditPostsData>() }
-    val redditPostData : LiveData<MutableList<RedditPostsData>> = mutableRedditPostData
+    val redditPostData: LiveData<MutableList<RedditPostsData>> = mutableRedditPostData
+
+    private var currentSubscription: PageSubscriber? = null
 
     private var currentPostUrl: String? = null
 
-    enum class ViewState{LOADING, NONE, NO_DATA_AVAILABLE, ERROR }
+    enum class ViewState { LOADING, NONE, NO_DATA_AVAILABLE, ERROR }
 
     init {
-        loadRedditNews(true,true)
+        loadRedditNews(true, true)
     }
 
-
-     fun loadMoreRedditNews() {
-        async {
-            redditRepository.getMoreNews(object : RedditDataSource.LoadNewsCallback {
-                override fun onNewsLoaded(news: List<RedditNewsData>) {
-                    mutableMoreRedditNewsData.postValue(news.toMutableList())
-                }
-
-                override fun onDataNotAvailable() {
-                    mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
-                }
-            })
+    abstract class PageSubscriber : ResourceSubscriber<List<RedditNewsData>>() {
+        override fun onStart() {
+            nextPage()
         }
 
-
+        fun nextPage() {
+            request(1) // <<- Generate a single request
+        }
     }
 
+    fun loadMoreRedditNews() {
+        currentSubscription?.nextPage()
+    }
 
-     fun loadRedditNews(forceUpdate: Boolean, showLoadingUI: Boolean) {
-         async {
-             if (showLoadingUI) {
-                 mutableViewState.postValue(ViewState.LOADING)
-             }
-             if (forceUpdate) {
-                 redditRepository.refreshNews()
-             }
+    fun loadRedditNews(forceUpdate: Boolean, showLoadingUI: Boolean) {
+        Log.d("NewsViewModel", "Load reddit news: force $forceUpdate, show $showLoadingUI")
+        if (showLoadingUI) {
+            mutableViewState.postValue(ViewState.LOADING)
+        }
 
-             redditRepository.getNews(object : RedditDataSource.LoadNewsCallback {
-                 override fun onNewsLoaded(news: List<RedditNewsData>) {
-                     if (showLoadingUI) {
-                         mutableViewState.postValue(ViewState.NONE)
-                     }
-                     if (news.isEmpty()){
-                         mutableViewState.postValue(ViewState.NO_DATA_AVAILABLE)
-                     } else {
-                         mutableRedditNewsData.postValue(news.toMutableList())
-                     }
-                 }
+        if (forceUpdate || currentSubscription == null) {
+            val newSubscription = object : PageSubscriber() {
+                var isMore = false
+                override fun onComplete() {
+                    mutableViewState.setValue(ViewState.NO_DATA_AVAILABLE)
+                }
 
-                 override fun onDataNotAvailable() {
-                     mutableViewState.postValue(ViewState.ERROR)
-                 }
-             })
-         }
+                override fun onNext(t: List<RedditNewsData>?) {
+                    Log.d("NewsViewModel", "Got more news: $t")
+                    mutableViewState.setValue(ViewState.NONE)
+                    if (t != null) {
+                        if(isMore)
+                            mutableMoreRedditNewsData.setValue(t.toMutableList())
+                        else {
+                            isMore = true
+                            mutableRedditNewsData.setValue(t.toMutableList())
+                        }
+                    } else {
+                        mutableViewState.setValue(ViewState.NO_DATA_AVAILABLE)
+                    }
+                }
 
+                override fun onError(t: Throwable?) {
+                    mutableViewState.postValue(ViewState.ERROR)
+                }
+            }
+            currentSubscription?.dispose()
+            currentSubscription = redditRepository.news
+                    .subscribeOn(ioScheduler)
+                    .observeOn(mainScheduler, false, 1)
+                    .subscribeWith(newSubscription)
+        }
     }
 
 
@@ -104,10 +124,8 @@ class NewsViewModel @Inject constructor( private val redditRepository: RedditRep
 
     }
 
-    fun setRedditUrl(redditUrl: String){
+    fun setRedditUrl(redditUrl: String) {
         this.currentPostUrl = redditUrl
     }
-
-
 
 }

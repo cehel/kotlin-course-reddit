@@ -115,12 +115,13 @@ class OverviewFragment : Fragment(), Injectable {
             }
             NewsViewModel.ViewState.ERROR -> {
                 refreshLayout.isRefreshing = false
-                Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_news, Snackbar.LENGTH_LONG)
+                Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_news, Snackbar.LENGTH_LONG).show()
             }
             NewsViewModel.ViewState.NO_DATA_AVAILABLE -> {
                 refreshLayout.isRefreshing = false
                 redditNewsView.visibility = View.GONE
                 noRedditNewsView.visibility = View.VISIBLE
+                Snackbar.make(view!!, "No new data available", Snackbar.LENGTH_LONG).show()
             }
         }
     }

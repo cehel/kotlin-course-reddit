@@ -17,12 +17,15 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dagger.Module
 import dagger.Provides
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Modifier
 import java.lang.reflect.Type
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -81,6 +84,16 @@ class AppModule(){
     @Provides
     @Singleton
     fun provideRedditLocalDataSource(context: Context) = RedditNewsLocalDataSource(context)
+
+    @Provides
+    @Singleton
+    @Named("io-scheduler")
+    fun provideIoScheduler() = Schedulers.io()
+
+    @Provides
+    @Singleton
+    @Named("main-scheduler")
+    fun provideMainScheduler() = AndroidSchedulers.mainThread()
 
     @Provides
     @Singleton

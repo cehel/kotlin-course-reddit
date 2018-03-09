@@ -2,15 +2,14 @@ package ch.zuehlke.reddit.data.source.local
 
 import android.content.ContentValues
 import android.content.Context
-
-import java.util.ArrayList
-
 import ch.zuehlke.reddit.data.source.RedditDataSource
 import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
-
 import com.google.common.base.Preconditions.checkNotNull
 import javax.inject.Inject
+import io.reactivex.Single
+import io.reactivex.SingleEmitter
+import java.util.*
 
 /**
  * Created by chsc on 08.11.17.
@@ -26,11 +25,7 @@ class RedditNewsLocalDataSource// Prevent direct instantiation.
         mDbHelper = RedditNewsDataHelper(context)
     }
 
-    override fun getMoreNews(callback: RedditDataSource.LoadNewsCallback) {
-        throw UnsupportedOperationException("Not supported by local datasource")
-    }
-
-    override fun getNews(callback: RedditDataSource.LoadNewsCallback) {
+    override val news = Single.create({emitter:SingleEmitter<List<RedditNewsData>> ->
         val redditNews = ArrayList<RedditNewsData>()
         val db = mDbHelper.readableDatabase
 
@@ -57,14 +52,8 @@ class RedditNewsLocalDataSource// Prevent direct instantiation.
         c?.close()
 
         db.close()
-
-        if (redditNews.isEmpty()) {
-            // This will be called if the table is new or just empty.
-            callback.onDataNotAvailable()
-        } else {
-            callback.onNewsLoaded(redditNews)
-        }
-    }
+        emitter.onSuccess(redditNews.toList())
+    }).toFlowable()
 
     override fun getPosts(callback: RedditDataSource.LoadPostsCallback, permalink: String) {
         val redditNews = ArrayList<RedditPostsData>()
@@ -135,11 +124,6 @@ class RedditNewsLocalDataSource// Prevent direct instantiation.
         val db = mDbHelper.writableDatabase
         db.delete(RedditNewsPersistenceContract.RedditPostEntry.TABLE_NAME, where, null)
         db.close()
-    }
-
-    override fun refreshNews() {
-        // Not required because the {@link RedditRepository} handles the logic of refreshing the
-        // news from all the available redditPost sources.
     }
 
     override fun deleteAllNews() {

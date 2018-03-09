@@ -42,7 +42,7 @@ private constructor(gson: Gson, type: Type){
                     .map { it as RedditPostElement.DataRedditPostElement }
                     .flatMap { element ->
                         element.data?.let { data ->
-                            if (Strings.isNullOrEmpty(data.body_html)) {
+                            if (element.kind == "Listing") {
                                 recursivlyParseResponse(element, data.id, parentPermaLink)
                             } else {
                                 listOf(RedditPostsData(data.id!!, null, data.author, data.body, data.created_utc, data.depth, data.body_html, data.permalink, 0))
