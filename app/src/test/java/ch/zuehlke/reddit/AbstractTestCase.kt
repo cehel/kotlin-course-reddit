@@ -1,11 +1,11 @@
 package ch.zuehlke.reddit
 
+import ch.zuehlke.reddit.common.friendlyTime
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 
 import ch.zuehlke.reddit.data.source.remote.model.posts.RedditPostElement
-import ch.zuehlke.reddit.util.DateUtils
 
 import com.google.common.base.Strings.repeat
 import java.io.Reader
@@ -65,7 +65,7 @@ abstract class AbstractTestCase {
 
                 if (dataElement.data!!.created_utc != 0L) {
                     print("Created=")
-                    println(DateUtils.friendlyTime(dataElement.data!!.created_utc))
+                    println(dataElement.data!!.created_utc.friendlyTime())
                 }
 
                 if (dataElement.data!!.depth != 0) {
