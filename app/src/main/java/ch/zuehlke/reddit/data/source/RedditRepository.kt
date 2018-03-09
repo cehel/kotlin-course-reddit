@@ -8,6 +8,7 @@ import java.util.LinkedHashMap
 
 import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
+import ch.zuehlke.reddit.util.AndroidUtils
 
 import com.google.common.base.Preconditions.checkNotNull
 import javax.inject.Inject
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 class RedditRepository
 @Inject constructor(newsRemoteDataSource: RedditDataSource,
-                    newsLocalDataSource: RedditDataSource, private val mContext: Context) : RedditDataSource {
+                    newsLocalDataSource: RedditDataSource, private val androidUtils: AndroidUtils) : RedditDataSource {
 
     companion object {
 
@@ -69,9 +70,7 @@ class RedditRepository
 
     private val isNetworkAvailable: Boolean
         get() {
-            val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetworkInfo = connectivityManager.activeNetworkInfo
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected
+            return androidUtils.isNetworkAvailable()
         }
 
     override fun getNews(callback: RedditDataSource.LoadNewsCallback) {

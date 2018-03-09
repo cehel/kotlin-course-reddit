@@ -10,6 +10,7 @@ import ch.zuehlke.reddit.data.source.remote.RedditElementTypeAdapterFactory
 import ch.zuehlke.reddit.data.source.remote.RedditNewsDataRemoteDataSource
 import ch.zuehlke.reddit.data.source.remote.model.posts.RedditPostElement
 import ch.zuehlke.reddit.features.login.PreferencesHolder
+import ch.zuehlke.reddit.util.AndroidUtils
 import com.google.common.base.Preconditions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -37,6 +38,10 @@ class AppModule(){
     fun provideContext(app: Application): Context {
         return app
     }
+
+    @Provides
+    @Singleton
+    fun provideAndroidUtils(context: Context) = AndroidUtils(context)
 
     @Provides
     @Singleton
@@ -88,10 +93,9 @@ class AppModule(){
 
     @Provides
     @Singleton
-    fun provideRedditNewsRepository(context: Context, redditNewsDataRemoteDataSource: RedditNewsDataRemoteDataSource, redditNewsLocalDataSource: RedditNewsLocalDataSource): RedditRepository {
-        Preconditions.checkNotNull(context)
+    fun provideRedditNewsRepository(androidUtils: AndroidUtils, redditNewsDataRemoteDataSource: RedditNewsDataRemoteDataSource, redditNewsLocalDataSource: RedditNewsLocalDataSource): RedditRepository {
         return RedditRepository(redditNewsDataRemoteDataSource,
-                redditNewsLocalDataSource, context)
+                redditNewsLocalDataSource, androidUtils)
     }
     
 }
