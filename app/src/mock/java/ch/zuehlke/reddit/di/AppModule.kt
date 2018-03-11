@@ -10,7 +10,6 @@ import ch.zuehlke.reddit.data.source.remote.RedditElementTypeAdapterFactory
 import ch.zuehlke.reddit.data.source.remote.model.posts.RedditPostElement
 import ch.zuehlke.reddit.features.login.PreferencesHolder
 import ch.zuehlke.reddit.util.AndroidUtils
-import com.google.common.base.Preconditions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -18,11 +17,6 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.reflect.Modifier
 import java.lang.reflect.Type
 import javax.inject.Named
 import javax.inject.Singleton

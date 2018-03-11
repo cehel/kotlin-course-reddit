@@ -1,18 +1,11 @@
 package ch.zuehlke.reddit.data.source
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.util.Log
-
-import java.util.ArrayList
-import java.util.LinkedHashMap
-
 import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
 import ch.zuehlke.reddit.util.AndroidUtils
-
 import com.google.common.base.Preconditions.checkNotNull
 import io.reactivex.Flowable
+import java.util.*
 import javax.inject.Inject
 
 /**
