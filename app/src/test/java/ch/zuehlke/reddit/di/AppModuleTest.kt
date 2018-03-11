@@ -27,9 +27,6 @@ import javax.inject.Singleton
 @Module
 class AppModuleTest{
 
-
-
-
     @Provides
     @Singleton
     fun provideSharedPreferenceHolder() = FakeSharedPreferences()
