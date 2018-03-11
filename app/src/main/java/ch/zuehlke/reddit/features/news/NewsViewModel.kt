@@ -8,10 +8,7 @@ import ch.zuehlke.reddit.data.source.RedditDataSource
 import ch.zuehlke.reddit.data.source.RedditRepository
 import ch.zuehlke.reddit.models.RedditNewsData
 import ch.zuehlke.reddit.models.RedditPostsData
-import io.reactivex.Flowable
 import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subscribers.ResourceSubscriber
 import kotlinx.coroutines.experimental.async
 import javax.inject.Inject
@@ -24,8 +21,8 @@ import javax.inject.Named
 
 class NewsViewModel @Inject constructor(
         private val redditRepository: RedditRepository,
-        @Named("io-scheduler") private val ioScheduler: Scheduler = Schedulers.io(),
-        @Named("main-scheduler") private val mainScheduler: Scheduler = AndroidSchedulers.mainThread()
+        @Named("io-scheduler") private val ioScheduler: Scheduler,
+        @Named("main-scheduler") private val mainScheduler: Scheduler
 ): ViewModel(){
 
     private val mutableRedditNewsData: MutableLiveData<MutableList<RedditNewsData>> = MutableLiveData<MutableList<RedditNewsData>>().apply { emptyList<RedditNewsData>() }
