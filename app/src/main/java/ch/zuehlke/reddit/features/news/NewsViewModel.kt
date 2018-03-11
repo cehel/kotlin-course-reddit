@@ -85,6 +85,8 @@ class NewsViewModel @Inject constructor(
                         if(isMore)
                             mutableMoreRedditNewsData.setValue(t.toMutableList())
                         else {
+                            if(!isMore && t.isEmpty()) // When there is nothing in the DB, request another page
+                                currentSubscription?.nextPage()
                             isMore = true
                             mutableRedditNewsData.setValue(t.toMutableList())
                         }
