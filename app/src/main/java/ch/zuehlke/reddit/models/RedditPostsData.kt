@@ -1,17 +1,19 @@
 package ch.zuehlke.reddit.models
 
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
+
 /**
  * Created by celineheldner on 13.11.17.
  */
 
-data class RedditPostsData(
-        val id: String,
-        val parentId: String?,
-        val author: String?,
-        val body: String?,
-        val created_utc: Long,
-        val depth: Int,
-        val body_html: String?,
-        val parentPermaLink: String?,
-        val ordering: Long
-)
+@Entity(tableName = "redditPosts")
+data class RedditPostsData(@PrimaryKey var id: String = "",
+                           var parentId: String? = null,
+                           var author: String? = null,
+                           var body: String? = null,
+                           var createdUtc: Long = 0,
+                           var depth: Int = 0,
+                           var body_html: String? = null,
+                           var parentPermaLink: String? = null,
+                           var ordering: Long = 0)

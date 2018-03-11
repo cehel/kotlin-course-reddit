@@ -10,6 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.mockito.Mock
+import org.mockito.junit.MockitoJUnit
 
 
 /**
@@ -21,6 +22,9 @@ class LoginViewModelTest: BaseTest(){
 
     @get:Rule
     var rule:TestRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    var mockitoRule = MockitoJUnit.rule()
 
     override fun setup(){
         super.setup()

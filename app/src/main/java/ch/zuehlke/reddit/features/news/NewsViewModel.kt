@@ -3,7 +3,6 @@ package ch.zuehlke.reddit.features.news
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import ch.zuehlke.reddit.data.source.RedditDataSource
 import ch.zuehlke.reddit.data.source.RedditRepository
 import ch.zuehlke.reddit.models.RedditNewsData
@@ -66,7 +65,6 @@ class NewsViewModel @Inject constructor(
     }
 
     fun loadRedditNews(forceUpdate: Boolean, showLoadingUI: Boolean) {
-        Log.d("NewsViewModel", "Load reddit news: force $forceUpdate, show $showLoadingUI")
         if (showLoadingUI) {
             mutableViewState.postValue(ViewState.LOADING)
         }
@@ -79,7 +77,6 @@ class NewsViewModel @Inject constructor(
                 }
 
                 override fun onNext(t: List<RedditNewsData>?) {
-                    Log.d("NewsViewModel", "Got more news: $t")
                     mutableViewState.setValue(ViewState.NONE)
                     if (t != null) {
                         if(isMore)

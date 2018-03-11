@@ -5,5 +5,5 @@ package ch.zuehlke.reddit.features.news.overview.adapter
  */
 
 interface ViewType {
-    val viewType: Int
+    fun getViewType(): Int
 }
