@@ -31,16 +31,6 @@ class DetailFragment: Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    companion object {
-
-        private val TAG = "DetailFragment"
-
-        fun newInstance(): DetailFragment {
-            val detailFragment = DetailFragment()
-            return detailFragment
-        }
-    }
-
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.fragment_detail, container, false)
