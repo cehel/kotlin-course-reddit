@@ -8,7 +8,7 @@ import ch.zuehlke.reddit.features.news.overview.adapter.ViewType
 /**
  * Created by chsc on 08.11.17.
  */
-@Entity
+//TODO: room_exercise1: Füge die nötige Room Annotation hinzu um eine Entity zu erstellen
 data class RedditNewsData(
         var author: String? = null,
         var title: String? = null,
@@ -16,7 +16,10 @@ data class RedditNewsData(
         var created: Long = 0,
         var thumbnailUrl: String? = "",
         var url: String? = "",
-        @PrimaryKey var id: String = "",
+
+        //TODO: room_exercise1: Das ist ein Primary Key. Füge die nötige Room Annotation hinzu
+        var id: String = "",
+
         var permaLink: String = ""
 
 ): ViewType{

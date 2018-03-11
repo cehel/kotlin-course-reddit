@@ -15,16 +15,16 @@ import io.reactivex.Single
 interface RedditNewsDataDao{
 
 
-    @Query("select * from RedditNewsData")
+    //TODO: room_exercise1: Füge die nötige Room Annotation hinzu
     fun getNews(): List<RedditNewsData>
 
-    @Query("select * from RedditNewsData")
+    //TODO: room_exercise1: Füge die nötige Room Annotation hinzu
     fun getSingleNews(): Single<List<RedditNewsData>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    //TODO: room_exercise1: Füge die nötige Room Annotation hinzu
     fun addNewsItem(item: List<RedditNewsData>)
 
-    @Query("delete from RedditNewsData")
+    //TODO: room_exercise1: Füge die nötige Room Annotation hinzu
     fun deleteNews()
 
 
