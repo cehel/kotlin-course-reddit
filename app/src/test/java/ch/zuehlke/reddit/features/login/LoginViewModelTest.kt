@@ -3,14 +3,24 @@ package ch.zuehlke.reddit.features.login
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
 import ch.zuehlke.reddit.BaseTest
+import ch.zuehlke.reddit.RXRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import io.reactivex.Scheduler
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.TestScheduler
 import org.junit.Rule
 
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
+import javax.inject.Inject
+import javax.inject.Named
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.android.plugins.RxAndroidPlugins
+
+
 
 
 /**
@@ -23,13 +33,20 @@ class LoginViewModelTest: BaseTest(){
     @get:Rule
     var rule:TestRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    var mockitoRule = MockitoJUnit.rule()
+
+
+
 
     override fun setup(){
         super.setup()
+
+
+
         this.observer = mock()
         loginViewModel.viewState.observeForever(observer)
+
+
+
 
     }
 

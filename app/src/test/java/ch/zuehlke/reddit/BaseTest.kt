@@ -14,6 +14,8 @@ import javax.inject.Inject
 
 open class BaseTest {
 
+    @Rule @JvmField var testSchedulerRule = RXRule()
+
     @Inject
     lateinit var loginViewModel: LoginViewModel
 

@@ -2,9 +2,15 @@ package ch.zuehlke.reddit.di
 
 import ch.zuehlke.reddit.data.source.RedditRepository
 import ch.zuehlke.reddit.features.login.FakeSharedPreferences
+import ch.zuehlke.reddit.models.RedditNewsData
+import com.google.common.collect.ImmutableList
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.SingleEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.schedulers.ExecutorScheduler
@@ -21,26 +27,30 @@ import javax.inject.Singleton
 @Module
 class AppModuleTest{
 
-    private val immediate = object : Scheduler() {
-        override fun scheduleDirect(run: Runnable,
-                                    delay: Long, unit: TimeUnit): Disposable {
-            return super.scheduleDirect(run, 0, unit)
-        }
 
-        override fun createWorker(): Scheduler.Worker {
-            return ExecutorScheduler.ExecutorWorker(
-                    Executor { it.run() })
-        }
-    }
+
 
     @Provides
     @Singleton
     fun provideSharedPreferenceHolder() = FakeSharedPreferences()
 
 
+    @Provides
+    @Singleton
+    @Named("io-scheduler")
+    fun provideIoScheduler() = Schedulers.io()
+
+    @Provides
+    @Singleton
+    @Named("main-scheduler")
+    fun provideMainScheduler() = AndroidSchedulers.mainThread()
 
 
     @Provides
     @Singleton
-    fun provideRedditNewsRepository() = Mockito.mock(RedditRepository::class.java)
+    fun provideRedditNewsRepository() = mock<RedditRepository>(){ on{news} doReturn
+        Single.create({ emitter: SingleEmitter<List<RedditNewsData>> ->
+            emitter.onSuccess(ImmutableList.of())
+        }).toFlowable()
+    }
 }
