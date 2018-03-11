@@ -14,8 +14,7 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(
         AndroidInjectionModule::class,
         AppModule::class,
-        ActivityModule::class,
-        ViewModelModule::class))
+        ActivityModule::class))
 interface AppComponent{
 
     fun inject(app: RedditApp)
