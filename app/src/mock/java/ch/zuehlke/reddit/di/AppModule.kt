@@ -78,7 +78,9 @@ class AppModule(){
 
     @Provides
     @Singleton
-    fun provideRedditLocalDataSource(context: Context, appDB: AppDatabase) = RedditNewsLocalDataSource2(context,appDB)
+    fun provideRedditLocalDataSource(context: Context,
+                                     appDB: AppDatabase,
+                                     scheduler: io.reactivex.schedulers.Scheduler) = RedditNewsLocalDataSource2(context,appDB, scheduler)
 
     @Provides
     @Singleton

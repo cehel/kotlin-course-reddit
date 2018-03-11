@@ -1,15 +1,18 @@
 package ch.zuehlke.reddit.di
 
 import android.app.Application
+import android.arch.persistence.room.Room
 import android.content.Context
 import ch.zuehlke.reddit.data.source.RedditRepository
 import ch.zuehlke.reddit.data.source.RemoteDataMapper
-import ch.zuehlke.reddit.data.source.local.RedditNewsLocalDataSource
+import ch.zuehlke.reddit.data.source.local.RedditNewsLocalDataSource2
 import ch.zuehlke.reddit.data.source.remote.RedditAPI
 import ch.zuehlke.reddit.data.source.remote.RedditElementTypeAdapterFactory
 import ch.zuehlke.reddit.data.source.remote.RedditNewsDataRemoteDataSource
 import ch.zuehlke.reddit.data.source.remote.model.posts.RedditPostElement
 import ch.zuehlke.reddit.features.login.PreferencesHolder
+import ch.zuehlke.reddit.models.AppDatabase
+import ch.zuehlke.reddit.models.MIGRATION_1_2
 import ch.zuehlke.reddit.util.AndroidUtils
 import com.google.common.base.Preconditions
 import com.google.gson.Gson
@@ -17,6 +20,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -45,6 +49,13 @@ class AppModule(){
     @Provides
     @Singleton
     fun provideAndroidUtils(context: Context) = AndroidUtils(context)
+
+    @Provides
+    @Singleton
+    fun provideRedditDatabase(app: Application): AppDatabase {
+        return Room.databaseBuilder(app, AppDatabase::class.java, "reddit-db")
+                .addMigrations(MIGRATION_1_2).build()
+    }
 
     @Provides
     @Singleton
@@ -95,11 +106,6 @@ class AppModule(){
     @Named("main-scheduler")
     fun provideMainScheduler() = AndroidSchedulers.mainThread()
 
-
-    @Provides
-    @Singleton
-    fun provideRedditLocalDataSource(context: Context) = RedditNewsLocalDataSource(context)
-
     @Provides
     @Singleton
     fun provideSharedPreferenceHolder(context: Context) = PreferencesHolder(context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE))
@@ -107,7 +113,7 @@ class AppModule(){
 
     @Provides
     @Singleton
-    fun provideRedditNewsRepository(androidUtils: AndroidUtils, redditNewsDataRemoteDataSource: RedditNewsDataRemoteDataSource, redditNewsLocalDataSource: RedditNewsLocalDataSource): RedditRepository {
+    fun provideRedditNewsRepository(androidUtils: AndroidUtils, redditNewsDataRemoteDataSource: RedditNewsDataRemoteDataSource, redditNewsLocalDataSource: RedditNewsLocalDataSource2): RedditRepository {
         return RedditRepository(redditNewsDataRemoteDataSource,
                 redditNewsLocalDataSource, androidUtils)
     }

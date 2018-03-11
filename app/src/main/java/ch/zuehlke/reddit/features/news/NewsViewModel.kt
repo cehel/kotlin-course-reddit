@@ -23,8 +23,8 @@ import javax.inject.Named
 
 class NewsViewModel @Inject constructor(
         private val redditRepository: RedditRepository,
-        @Named("io-scheduler") private val ioScheduler: Scheduler = Schedulers.io(),
-        @Named("main-scheduler") private val mainScheduler: Scheduler = AndroidSchedulers.mainThread()
+        @Named("io-scheduler") private val ioScheduler: Scheduler ,
+        @Named("main-scheduler") private val mainScheduler: Scheduler
 ): ViewModel(){
 
     private val mutableRedditNewsData: MutableLiveData<MutableList<RedditNewsData>> = MutableLiveData<MutableList<RedditNewsData>>().apply { emptyList<RedditNewsData>() }
