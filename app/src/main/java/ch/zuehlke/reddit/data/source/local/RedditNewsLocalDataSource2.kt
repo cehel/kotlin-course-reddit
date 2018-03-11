@@ -1,6 +1,5 @@
 package ch.zuehlke.reddit.data.source.local
 
-import android.content.ContentValues
 import android.content.Context
 import ch.zuehlke.reddit.data.source.RedditDataSource
 import ch.zuehlke.reddit.models.AppDatabase
@@ -10,11 +9,8 @@ import com.google.common.base.Preconditions.checkNotNull
 import com.google.common.collect.ImmutableList
 import io.reactivex.Completable
 import io.reactivex.Scheduler
-import javax.inject.Inject
-import io.reactivex.Single
-import io.reactivex.SingleEmitter
 import kotlinx.coroutines.experimental.async
-import java.util.*
+import javax.inject.Inject
 import javax.inject.Named
 
 /**

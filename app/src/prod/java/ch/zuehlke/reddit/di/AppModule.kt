@@ -14,13 +14,11 @@ import ch.zuehlke.reddit.features.login.PreferencesHolder
 import ch.zuehlke.reddit.models.AppDatabase
 import ch.zuehlke.reddit.models.MIGRATION_1_2
 import ch.zuehlke.reddit.util.AndroidUtils
-import com.google.common.base.Preconditions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient

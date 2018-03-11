@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.lang.reflect.Type
@@ -75,12 +76,6 @@ class AppModule(){
     @Provides
     @Singleton
     fun provideRemoteMapper(gson: Gson, type: Type) = RemoteDataMapper.getInstance(gson, type)
-
-    @Provides
-    @Singleton
-    fun provideRedditLocalDataSource(context: Context,
-                                     appDB: AppDatabase,
-                                     scheduler: io.reactivex.schedulers.Scheduler) = RedditNewsLocalDataSource2(context,appDB, scheduler)
 
     @Provides
     @Singleton
