@@ -39,14 +39,8 @@ class LoginViewModelTest: BaseTest(){
 
     override fun setup(){
         super.setup()
-
-
-
         this.observer = mock()
         loginViewModel.viewState.observeForever(observer)
-
-
-
 
     }
 
