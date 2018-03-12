@@ -8,7 +8,11 @@ import org.junit.Test
  */
 class DaggerExerciseTest{
 
-    //TODO:chapter_03_dagger_exercise1 Create a dagger graph so the dependencies below can be injected!
+    /*
+    TODO:chapter_03_dagger_exercise1 Create a dagger graph so the dependencies below can be injected!
+
+    Hint: Once the Component and Module exist, CleanProject and run the test, so Dagger can generate the classes
+     */
 
     private val emailValidator = EmailValidator.getInstance()
     private val spamFilter = SpamFilter.getInstance()
