@@ -1,22 +1,20 @@
 package ch.zuehlke.reddit.daggerexercise
 
+import ch.zuehlke.reddit.daggerexercise.di.DaggerTestComponent
 import org.junit.Before
 import org.junit.Test
+import javax.inject.Inject
 
 /**
  * Created by celineheldner on 12.03.18.
  */
-class DaggerExerciseTest{
+class DaggerExerciseTest(){
 
-    //TODO:chapter_03_dagger_exercise1 Create a dagger graph so the dependencies below can be injected!
-
-    private val emailValidator = EmailValidator.getInstance()
-    private val spamFilter = SpamFilter.getInstance()
-    val mailBox = MailBox(emailValidator,spamFilter)
+    @Inject lateinit var mailBox: MailBox
 
     @Before
     fun setup(){
-
+        DaggerTestComponent.builder().build().inject(this)
     }
 
     @Test

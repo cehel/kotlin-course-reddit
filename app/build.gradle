@@ -21,6 +21,12 @@ android {
         }
     }
 
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
 
     flavorDimensions "tier"
     productFlavors {
@@ -91,18 +97,7 @@ dependencies {
     implementation "android.arch.lifecycle:livedata:$arch_version"
 
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
-
-    //Dagger
-    implementation "com.google.dagger:dagger:$dagger_version"
-    implementation "com.google.dagger:dagger-android:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-
 
 
     // Test dependencies
