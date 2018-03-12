@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier
 
 /**
  * Enables injection of production implementations for
- * [ch.zuehlke.sbb.reddit.data.source.RedditDataSource] at compile time.
+ * [ch.zuehlke.reddit.data.source.RedditDataSource] at compile time.
  */
 object Injection {
 

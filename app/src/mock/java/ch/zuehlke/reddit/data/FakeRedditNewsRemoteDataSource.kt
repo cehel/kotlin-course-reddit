@@ -1,13 +1,13 @@
-package ch.zuehlke.sbb.reddit.data
+package ch.zuehlke.reddit.data
 
 import android.content.Context
 import android.support.annotation.NonNull
-import ch.zuehlke.sbb.reddit.R
-import ch.zuehlke.sbb.reddit.data.source.RedditDataSource
-import ch.zuehlke.sbb.reddit.data.source.RemoteDataMapper
-import ch.zuehlke.sbb.reddit.data.source.remote.model.news.RedditNewsAPIResponse
-import ch.zuehlke.sbb.reddit.models.RedditNewsData
-import ch.zuehlke.sbb.reddit.models.RedditPostsData
+import ch.zuehlke.reddit.R
+import ch.zuehlke.reddit.data.source.RedditDataSource
+import ch.zuehlke.reddit.data.source.RemoteDataMapper
+import ch.zuehlke.reddit.data.source.remote.model.news.RedditNewsAPIResponse
+import ch.zuehlke.reddit.models.RedditNewsData
+import ch.zuehlke.reddit.models.RedditPostsData
 import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
