@@ -16,7 +16,6 @@ import ch.zuehlke.reddit.features.news.NavigationController
 import ch.zuehlke.reddit.features.news.NewsActivity
 import ch.zuehlke.reddit.features.news.NewsViewModel
 import ch.zuehlke.reddit.features.news.NewsViewModelFactory
-import ch.zuehlke.reddit.features.news.detail.DetailFragment
 import ch.zuehlke.reddit.features.news.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.reddit.features.news.overview.adapter.impl.RedditOverviewAdapter
 import ch.zuehlke.reddit.models.RedditNewsData
@@ -36,11 +35,6 @@ class OverviewFragment : Fragment() {
 
     private val listener = object: OnNewsSelectedListener {
         override fun onNewsSelected(url: String) {
-            val newsFactory = NewsViewModelFactory(redditRepository = Injection.provideRedditNewsRepository(activity))
-            val newsViewModel = ViewModelProviders.of(activity, newsFactory).get(NewsViewModel::class.java)
-
-            newsViewModel.setRedditUrl(url)
-            mNavigationController?.navigateToFragment(DetailFragment::class.java)
 
         }
     }
