@@ -26,7 +26,7 @@ class LoginFragment : BaseFragment() {
         fun newInstance(): LoginFragment = LoginFragment()
     }
 
-    private var enteredUserName: String? by savedInstanceState()
+    private var enteredUserName: String? = ""
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.fragment_login, container, false)
