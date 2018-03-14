@@ -1,0 +1,282 @@
+Index: app/src/main/java/ch/zuehlke/reddit/di/FragmentBuilderModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/di/FragmentBuilderModule.kt	(revision 8fa59093e61c37f091a0b5b4bbabf3d9b029400d)
++++ app/src/main/java/ch/zuehlke/reddit/di/FragmentBuilderModule.kt	(revision )
+@@ -1,7 +1,6 @@
+ package ch.zuehlke.reddit.di
+ 
+ import ch.zuehlke.reddit.di.scope.FragmentScope
+-import ch.zuehlke.reddit.features.login.LoginFragment
+ import ch.zuehlke.reddit.features.news.overview.OverviewFragment
+ import dagger.Module
+ import dagger.android.ContributesAndroidInjector
+@@ -12,9 +11,7 @@
+ @Module
+ public abstract class FragmentBuilderModule{
+ 
+-    @ContributesAndroidInjector
+-    @FragmentScope
+-    abstract fun contributeLoginFragment(): LoginFragment
++
+ 
+ 
+     @ContributesAndroidInjector
+Index: app/src/main/java/ch/zuehlke/reddit/features/BaseActivtiy.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/features/BaseActivtiy.kt	(revision 8fa59093e61c37f091a0b5b4bbabf3d9b029400d)
++++ app/src/main/java/ch/zuehlke/reddit/features/BaseActivtiy.kt	(revision )
+@@ -1,8 +1,8 @@
+ package ch.zuehlke.reddit.features
+ 
+-import android.arch.lifecycle.ViewModelProvider
+ import android.support.v4.app.Fragment
+ import android.support.v7.app.AppCompatActivity
++import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
+ import dagger.android.DispatchingAndroidInjector
+ import dagger.android.support.HasSupportFragmentInjector
+ import javax.inject.Inject
+@@ -10,7 +10,7 @@
+ /**
+  * Created by celineheldner on 07.03.18.
+  */
+-open class BaseActivtiy : AppCompatActivity(), HasSupportFragmentInjector {
++open class BaseActivtiy : AppCompatActivity(), HasSupportFragmentInjector, SimpleAppCompatNavigation {
+ 
+     @Inject
+     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+Index: app/src/main/java/ch/zuehlke/reddit/features/news/NewsActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/features/news/NewsActivity.kt	(revision 8fa59093e61c37f091a0b5b4bbabf3d9b029400d)
++++ app/src/main/java/ch/zuehlke/reddit/features/news/NewsActivity.kt	(revision )
+@@ -1,27 +1,25 @@
+ package ch.zuehlke.reddit.features.news
+ 
+ import android.os.Bundle
+-import android.support.v7.app.AppCompatActivity
+ import android.support.v7.widget.Toolbar
+ import ch.zuehlke.reddit.R
+-import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
+ import ch.zuehlke.reddit.features.BaseActivtiy
++import javax.inject.Inject
+ 
+ /**
+  * Created by chsc on 11.11.17.
+  */
+ 
+-class NewsActivity : BaseActivtiy(),SimpleAppCompatNavigation {
++class NewsActivity : BaseActivtiy() {
+ 
+-    private var mNavigationController : NavigationController<NewsActivity>? = null
++    @Inject
++    lateinit var mNavigationController : NavigationController
+ 
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+ 
+         setContentView(R.layout.activity_news)
+ 
+-        mNavigationController = NavigationController(this, R.id.contentFrame)
+-
+         // Set up the toolbar.
+         setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
+         val ab = supportActionBar
+Index: app/src/main/java/ch/zuehlke/reddit/di/ActivityModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/di/ActivityModule.kt	(revision 8fa59093e61c37f091a0b5b4bbabf3d9b029400d)
++++ app/src/main/java/ch/zuehlke/reddit/di/ActivityModule.kt	(revision )
+@@ -1,9 +1,10 @@
+ package ch.zuehlke.reddit.di
+ 
+ import ch.zuehlke.reddit.di.scope.ActivityScope
+-import ch.zuehlke.reddit.features.BaseActivtiy
+ import ch.zuehlke.reddit.features.login.LoginActivity
++import ch.zuehlke.reddit.features.login.LoginActivityModule
+ import ch.zuehlke.reddit.features.news.NewsActivity
++import ch.zuehlke.reddit.features.news.NewsActivityModule
+ import dagger.Module
+ import dagger.android.ContributesAndroidInjector
+ 
+@@ -13,15 +14,12 @@
+ @Module
+ abstract class ActivityModule(){
+ 
+-    @ContributesAndroidInjector(modules = arrayOf(FragmentBuilderModule::class))
+-    @ActivityScope
+-    abstract fun contributeBaseActivity() : BaseActivtiy
+-
+-    @ContributesAndroidInjector(modules = arrayOf(FragmentBuilderModule::class))
++
++    @ContributesAndroidInjector(modules = arrayOf(LoginActivityModule::class))
+     @ActivityScope
+     abstract fun contributeLoginActivity() : LoginActivity
+ 
+-    @ContributesAndroidInjector(modules = arrayOf(FragmentBuilderModule::class))
++    @ContributesAndroidInjector(modules = arrayOf(NewsActivityModule::class))
+     @ActivityScope
+     abstract fun contributeNewsActivity() : NewsActivity
+ 
+Index: app/src/main/java/ch/zuehlke/reddit/features/news/NewsActivityModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/features/news/NewsActivityModule.kt	(revision )
++++ app/src/main/java/ch/zuehlke/reddit/features/news/NewsActivityModule.kt	(revision )
+@@ -0,0 +1,49 @@
++package ch.zuehlke.reddit.features.news
++
++import ch.zuehlke.reddit.R
++import ch.zuehlke.reddit.di.scope.ActivityScope
++import ch.zuehlke.reddit.di.scope.FragmentScope
++import ch.zuehlke.reddit.features.BaseActivtiy
++import ch.zuehlke.reddit.features.news.overview.OverviewFragment
++import dagger.Binds
++import dagger.Module
++import dagger.Provides
++import dagger.android.ContributesAndroidInjector
++import javax.inject.Named
++
++/**
++ * Created by celineheldner on 14.03.18.
++ */
++/**
++ * Created by celineheldner on 14.03.18.
++ */
++@Module
++abstract class NewsActivityModule{
++
++    @Binds
++    abstract fun provideNewsActivity(newsActivity: NewsActivity) : BaseActivtiy
++
++    @ContributesAndroidInjector
++    @FragmentScope
++    abstract fun contributeOverviewFragment(): OverviewFragment
++
++    @Module
++    companion object {
++
++        @Provides
++        @JvmStatic @Named("containerId")
++        @ActivityScope
++        fun provideFragmentId(): Int{
++            return R.id.contentFrame
++        }
++
++        @Provides
++        @JvmStatic
++        @ActivityScope
++        fun provideNavigationController(baseActivtiy: BaseActivtiy, @Named("containerId") containerId: Int): NavigationController {
++            return NavigationController(baseActivtiy, containerId)
++        }
++    }
++
++
++}
+\ No newline at end of file
+Index: app/src/main/java/ch/zuehlke/reddit/features/login/LoginActivityModule.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/features/login/LoginActivityModule.kt	(revision )
++++ app/src/main/java/ch/zuehlke/reddit/features/login/LoginActivityModule.kt	(revision )
+@@ -0,0 +1,44 @@
++package ch.zuehlke.reddit.features.login
++
++import ch.zuehlke.reddit.R
++import ch.zuehlke.reddit.di.scope.ActivityScope
++import ch.zuehlke.reddit.di.scope.FragmentScope
++import ch.zuehlke.reddit.features.BaseActivtiy
++import ch.zuehlke.reddit.features.news.NavigationController
++import dagger.Binds
++import dagger.Module
++import dagger.Provides
++import dagger.android.ContributesAndroidInjector
++import javax.inject.Named
++
++/**
++ * Created by celineheldner on 14.03.18.
++ */
++@Module
++abstract class LoginActivityModule{
++
++    @Binds
++    abstract fun provideLoginActivity(loginActivity: LoginActivity) : BaseActivtiy
++
++    @ContributesAndroidInjector
++    @FragmentScope
++    abstract fun contributeLoginFragment(): LoginFragment
++
++    @Module
++    companion object {
++
++        @Provides @JvmStatic @Named("containerId")
++        @ActivityScope
++        fun provideFragmentId(): Int{
++            return R.id.contentFrame
++        }
++
++        @Provides @JvmStatic
++        @ActivityScope
++        fun provideNavigationController(baseActivtiy: BaseActivtiy, @Named containerId: Int): NavigationController {
++            return NavigationController(baseActivtiy, containerId)
++        }
++    }
++
++
++}
+\ No newline at end of file
+Index: app/src/main/java/ch/zuehlke/reddit/features/news/overview/OverviewFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/features/news/overview/OverviewFragment.kt	(revision 8fa59093e61c37f091a0b5b4bbabf3d9b029400d)
++++ app/src/main/java/ch/zuehlke/reddit/features/news/overview/OverviewFragment.kt	(revision )
+@@ -33,7 +33,8 @@
+     lateinit var viewModelFactory: ViewModelProvider.Factory
+ 
+     private var mOverviewAdapter: RedditOverviewAdapter? = null
+-    private var mNavigationController: NavigationController<NewsActivity>? = null
++    @Inject
++    lateinit var mNavigationController: NavigationController
+ 
+ 
+ 
+Index: app/src/main/java/ch/zuehlke/reddit/features/news/NavigationController.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ch/zuehlke/reddit/features/news/NavigationController.kt	(revision 8fa59093e61c37f091a0b5b4bbabf3d9b029400d)
++++ app/src/main/java/ch/zuehlke/reddit/features/news/NavigationController.kt	(revision )
+@@ -1,15 +1,14 @@
+ package ch.zuehlke.reddit.features.news
+ 
+ import android.support.v4.app.Fragment
+-import android.support.v7.app.AppCompatActivity
+-import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
++import ch.zuehlke.reddit.features.BaseActivtiy
+ import ch.zuehlke.reddit.features.news.overview.OverviewFragment
+ 
+ 
+ /**
+  * Created by celineheldner on 17.11.17.
+  */
+-class NavigationController<out T> constructor(private val activity: T, private val fragmentContainerId: Int) where T : AppCompatActivity, T : SimpleAppCompatNavigation {
++class NavigationController constructor(private val activity: BaseActivtiy, private val fragmentContainerId: Int)  {
+ 
+     fun showOverview() {
+         var overviewFragment: OverviewFragment? = activity.supportFragmentManager.findFragmentById(fragmentContainerId!!) as OverviewFragment?
