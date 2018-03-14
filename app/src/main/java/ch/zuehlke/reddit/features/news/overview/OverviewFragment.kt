@@ -33,7 +33,8 @@ class OverviewFragment : Fragment(), Injectable {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var mOverviewAdapter: RedditOverviewAdapter? = null
-    private var mNavigationController: NavigationController<NewsActivity>? = null
+    @Inject
+    lateinit var mNavigationController: NavigationController
 
 
 

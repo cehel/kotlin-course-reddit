@@ -1,7 +1,6 @@
 package ch.zuehlke.reddit.di
 
 import ch.zuehlke.reddit.di.scope.FragmentScope
-import ch.zuehlke.reddit.features.login.LoginFragment
 import ch.zuehlke.reddit.features.news.overview.OverviewFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -12,9 +11,7 @@ import dagger.android.ContributesAndroidInjector
 @Module
 public abstract class FragmentBuilderModule{
 
-    @ContributesAndroidInjector
-    @FragmentScope
-    abstract fun contributeLoginFragment(): LoginFragment
+
 
 
     @ContributesAndroidInjector

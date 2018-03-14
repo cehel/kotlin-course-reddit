@@ -1,26 +1,24 @@
 package ch.zuehlke.reddit.features.news
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import ch.zuehlke.reddit.R
-import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
 import ch.zuehlke.reddit.features.BaseActivtiy
+import javax.inject.Inject
 
 /**
  * Created by chsc on 11.11.17.
  */
 
-class NewsActivity : BaseActivtiy(),SimpleAppCompatNavigation {
+class NewsActivity : BaseActivtiy() {
 
-    private var mNavigationController : NavigationController<NewsActivity>? = null
+    @Inject
+    lateinit var mNavigationController : NavigationController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_news)
-
-        mNavigationController = NavigationController(this, R.id.contentFrame)
 
         // Set up the toolbar.
         setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
