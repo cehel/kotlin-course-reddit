@@ -16,7 +16,6 @@ import ch.zuehlke.reddit.di.Injectable
 import ch.zuehlke.reddit.features.news.NavigationController
 import ch.zuehlke.reddit.features.news.NewsActivity
 import ch.zuehlke.reddit.features.news.NewsViewModel
-import ch.zuehlke.reddit.features.news.detail.DetailFragment
 import ch.zuehlke.reddit.features.news.overview.adapter.impl.RedditNewsDelegateAdapter.OnNewsSelectedListener
 import ch.zuehlke.reddit.features.news.overview.adapter.impl.RedditOverviewAdapter
 import ch.zuehlke.reddit.models.RedditNewsData
@@ -44,7 +43,7 @@ class OverviewFragment : Fragment(), Injectable {
             val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java);
 
             newsViewModel.setRedditUrl(url)
-            mNavigationController?.navigateToFragment(DetailFragment::class.java)
+            //Could navigate to a DetailView
 
         }
     }
