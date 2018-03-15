@@ -23,90 +23,42 @@ import javax.inject.Inject
  * Created by chsc on 13.11.17.
  */
 
-class DetailFragment: Fragment(), Injectable {
 
+/*
+Create a class DetailFragment that extends the Fragment class and implements Injectable
+-> Why Injectable? Look at the class ch.zuehlke.reddit.di.AppInjector:
 
-    private var mAdapter: DetailAdapter? = null
+                if(f is Injectable){
+                    AndroidSupportInjection.inject(f)
+                }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+   This is just a helper so we don't have to inject the fragment to the Dagger graph every time we create a new Fragment
 
-    companion object {
+   We will display all the RedditPosts of the clicked RedditNews in a RecyclerView. For this we need a RecyclerView.Adapter,
+   which we also create in this exercise. -> Implement it now in the DetailAdapter file. and then inject it with dagger
+   -> Hint we already used the RecyclerView in the OverviewFragment.  (https://developer.android.com/guide/topics/ui/layout/recyclerview.html)
 
-        private val TAG = "DetailFragment"
+   The NewsViewModel takes care of fetching the data from the reppository and exposing it for the View. This is already implemented.
+   We just need to inject the ViewModelFactory, with which we can retrieve the ViewModel
+   -> Hint we have done this similarly in the overviewFragment
 
-        fun newInstance(): DetailFragment {
-            val detailFragment = DetailFragment()
-            return detailFragment
-        }
-    }
+   We inflate the layout in the onCreateView function. The layout file R.layout.fragment_detail already exists.
 
+   We will setup the view in the onViewCreated function
+   The layout file already exists: R.layout.fragment_detail
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater!!.inflate(R.layout.fragment_detail, container, false)
+   We will do all other view-related setup in the onViewCreated function:
+        With kotlin-extensions you can easily fetch the view elements, defined in the layout-xml, with their ID.
+        Setup the RecyclerView.
+        Setup the ScrollChildSwipeRefreshLayout. When scrolled up it should reload the redditPosts
+        Call the newsViewModel to load the RedditPosts
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        redditPostView.apply{
-            layoutManager = LinearLayoutManager(context)
-            adapter = mAdapter
-            setHasFixedSize(true)
-        }
-
-        val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java)
-
-        // Set up progress indicator
-        refreshLayout.apply {
-            setColorSchemeColors(
-                    ContextCompat.getColor(activity, R.color.colorPrimary),
-                    ContextCompat.getColor(activity, R.color.colorAccent),
-                    ContextCompat.getColor(activity, R.color.colorPrimaryDark)
-            )
-            setScrollUpChild(redditPostView)
-            setOnRefreshListener { newsViewModel.loadRedditPosts() }
-        }
-
-        newsViewModel.loadRedditPosts()
-
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mAdapter = DetailAdapter(context)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java)
-
-        newsViewModel.redditPostData.observe(this, Observer { posts: List<RedditPostsData>? ->
-            posts?.let {
-                mAdapter?.clearAndAddPosts(it)
-            }
-         })
-
-        newsViewModel.viewState.observe(this, Observer {
-            viewstate: NewsViewModel.ViewState? -> handleViewState(viewstate)
-        })
-
-    }
-
-    fun handleViewState(viewState: NewsViewModel.ViewState?){
-        when(viewState){
-            NewsViewModel.ViewState.LOADING -> refreshLayout.isRefreshing = true
-            NewsViewModel.ViewState.NONE -> refreshLayout.isRefreshing = false
-            NewsViewModel.ViewState.NO_DATA_AVAILABLE -> {
-                refreshLayout.isRefreshing = false
-                Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_posts, Snackbar.LENGTH_LONG)
-            }
-            else -> {
-                refreshLayout.isRefreshing = false
-                Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_posts, Snackbar.LENGTH_LONG)
-            }
-        }
-    }
+   In the function onActivity Created we will observe the redditPostData, the LifeData in the NewsViewModel.
+   When we call loadRedditPosts this lifeData will be fetched. When there was an update we will add the Posts
+   to our RecyclerViewAdapter
+   Also add an observer to the NewsViewModel.ViewState and react accordingly
 
 
 
 
-}
+ */
