@@ -5,20 +5,16 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.google.common.base.Strings
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 
 /**
  * Created by celineheldner on 28.02.18.
  */
-class LoginViewModel(private val preferencesHolder: PreferencesHolder): ViewModel(){
+class LoginViewModel: ViewModel{
 
-    private companion object {
-        private const val KEY_USERNAME = "ch.zuehlke.reddit.features.login.key_username"
-        private const val KEY_PASSWORD = "ch.zuehlke.reddit.features.login.key_password"
-    }
-
-    private val mutableViewState: MutableLiveData<ViewState> = MutableLiveData<ViewState>().apply { ViewState.NONE }
-    val viewState : LiveData<ViewState> = mutableViewState
+    private val mutableViewState: MutableLiveData<LoginState> = MutableLiveData<LoginState>()
+    val viewState : LiveData<LoginState> = mutableViewState
 
     private val emailPattern: Pattern = Pattern.compile(
             "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
@@ -32,24 +28,21 @@ class LoginViewModel(private val preferencesHolder: PreferencesHolder): ViewMode
         LOADING,NONE,INVALID_PASSWORD,INVALID_USERNAME,INVALID_CREDENTIALS,LOGGED_IN
     }
 
-    fun login(userEmail: String, password: String) {
-        mutableViewState.postValue(ViewState.LOADING)
-        when{
-            userEmail != "test.tester@test.com" && password != "123456" -> {  mutableViewState.postValue(ViewState.INVALID_CREDENTIALS)}
-            userEmail != "test.tester@test.com" -> {  mutableViewState.postValue(ViewState.INVALID_USERNAME)}
-            password != "123456" -> {  mutableViewState.postValue(ViewState.INVALID_PASSWORD)}
-            else -> {
-                preferencesHolder.putString(KEY_USERNAME,userEmail).commit()
-                preferencesHolder.putString(KEY_PASSWORD,password).commit()
-                mutableViewState.postValue(ViewState.LOGGED_IN)
-            }
-        }
+    @Inject constructor(){
+
     }
 
-    fun getLoginData(): Pair<String,String> {
-        val username = preferencesHolder.getString(KEY_USERNAME,"")
-        val password = preferencesHolder.getString(KEY_PASSWORD,"")
-        return Pair(username,password)
+    fun login(userEmail: String, password: String) {
+        mutableViewState.postValue(LoginState.Loading)
+        when{
+            userEmail != "test.tester@test.com" && password != "123456" -> {  mutableViewState.postValue(LoginState.WrongCredentials)}
+            userEmail != "test.tester@test.com" -> {  mutableViewState.postValue(LoginState.WrongUserName)}
+            password != "123456" -> {  mutableViewState.postValue(LoginState.WrongPassword)}
+            else -> {
+                val loggedIn = LoginState.LoggedIn(userEmail, password)
+                mutableViewState.postValue(loggedIn)
+            }
+        }
     }
 
     fun verifyPasswordLength(password: String): Boolean =

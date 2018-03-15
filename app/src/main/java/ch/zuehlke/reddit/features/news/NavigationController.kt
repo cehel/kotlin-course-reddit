@@ -1,31 +1,30 @@
 package ch.zuehlke.reddit.features.news
 
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
+import ch.zuehlke.reddit.common.SimpleAppCompatNavigation
 import ch.zuehlke.reddit.features.news.overview.OverviewFragment
-import ch.zuehlke.reddit.util.ActivityUtils
+
 
 /**
  * Created by celineheldner on 17.11.17.
  */
-class NavigationController constructor(activity: FragmentActivity, fragmentContainerId: Int?){
-    val mActivity = activity
-    val mContainerId = fragmentContainerId
+class NavigationController<out T> constructor(private val activity: T, private val fragmentContainerId: Int) where T : AppCompatActivity, T : SimpleAppCompatNavigation {
 
-    fun showOverview(){
-        var overviewFragment: OverviewFragment? = mActivity.supportFragmentManager.findFragmentById(mContainerId!!) as OverviewFragment?
+    fun showOverview() {
+        var overviewFragment: OverviewFragment? = activity.supportFragmentManager.findFragmentById(fragmentContainerId!!) as OverviewFragment?
         if (overviewFragment == null) {
             // Create the fragment
             overviewFragment = OverviewFragment.newInstance()
-            ActivityUtils.addFragmentToActivity(
-                    mActivity.supportFragmentManager, overviewFragment!!, mContainerId)
+            activity.apply {
+                addFragment(overviewFragment!!, fragmentContainerId)
+            }
         }
-
-
     }
 
-    fun navigateToFragment(fragment: Class<out Fragment>){
-        ActivityUtils.replaceFragmentToActivity(
-                mActivity.supportFragmentManager, fragment.newInstance(), mContainerId!!)
+    fun navigateToFragment(fragment: Class<out Fragment>) {
+        activity.apply {
+            replaceFragment(fragment.newInstance(), fragmentContainerId)
+        }
     }
 }
