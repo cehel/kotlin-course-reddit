@@ -62,3 +62,85 @@ Create a class DetailFragment that extends the Fragment class and implements Inj
 
 
  */
+class DetailFragment: Fragment(), Injectable {
+
+    @Inject
+    lateinit var mAdapter: DetailAdapter
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    companion object {
+
+        private val TAG = "DetailFragment"
+
+        fun newInstance(): DetailFragment {
+            val detailFragment = DetailFragment()
+            return detailFragment
+        }
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_detail, container, false)
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        redditPostView.apply{
+            layoutManager = LinearLayoutManager(context)
+            adapter = mAdapter
+            setHasFixedSize(true)
+        }
+
+        val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java)
+
+        // Set up progress indicator
+        refreshLayout.apply {
+            setColorSchemeColors(
+                    ContextCompat.getColor(activity, R.color.colorPrimary),
+                    ContextCompat.getColor(activity, R.color.colorAccent),
+                    ContextCompat.getColor(activity, R.color.colorPrimaryDark)
+            )
+            setScrollUpChild(redditPostView)
+            setOnRefreshListener { newsViewModel.loadRedditPosts() }
+        }
+
+        newsViewModel.loadRedditPosts()
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val newsViewModel = ViewModelProviders.of(activity, viewModelFactory).get(NewsViewModel::class.java)
+
+        newsViewModel.redditPostData.observe(this, Observer { posts: List<RedditPostsData>? ->
+            posts?.let {
+                mAdapter.clearAndAddPosts(it)
+            }
+         })
+
+        newsViewModel.viewState.observe(this, Observer {
+            viewstate: NewsViewModel.ViewState? -> handleViewState(viewstate)
+        })
+
+    }
+
+    fun handleViewState(viewState: NewsViewModel.ViewState?){
+        when(viewState){
+            NewsViewModel.ViewState.LOADING -> refreshLayout.isRefreshing = true
+            NewsViewModel.ViewState.NONE -> refreshLayout.isRefreshing = false
+            NewsViewModel.ViewState.NO_DATA_AVAILABLE -> {
+                refreshLayout.isRefreshing = false
+                Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_posts, Snackbar.LENGTH_LONG)
+            }
+            else -> {
+                refreshLayout.isRefreshing = false
+                Snackbar.make(view!!, R.string.overview_screen_error_loading_reddit_posts, Snackbar.LENGTH_LONG)
+            }
+        }
+    }
+
+
+
+
+}
